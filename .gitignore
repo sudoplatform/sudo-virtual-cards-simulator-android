@@ -53,8 +53,6 @@ projectFilesBackup/.idea/workspace.xml
 kits.gradle
 
 **compatibility_archive.txt
-.gradle/
-sudovirtualcardssimulator/.gradle/
 /identity-system-test-config
 package-lock.json
 node_modules
