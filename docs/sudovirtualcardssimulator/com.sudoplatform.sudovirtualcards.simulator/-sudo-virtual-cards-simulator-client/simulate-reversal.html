@@ -1,0 +1,24 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SudoVirtualCardsSimulatorClient.simulateReversal - sudovirtualcardssimulator</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../index.html">com.sudoplatform.sudovirtualcards.simulator</a>&nbsp;/&nbsp;<a href="index.html">SudoVirtualCardsSimulatorClient</a>&nbsp;/&nbsp;<a href="./simulate-reversal.html">simulateReversal</a><br/>
+<br/>
+<h1>simulateReversal</h1>
+<a name="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateReversal(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateReversalInput)"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">simulateReversal</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateReversal(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateReversalInput)/request">request</span><span class="symbol">:</span>&nbsp;<a href="../../com.sudoplatform.sudovirtualcards.simulator.types.inputs/-simulate-reversal-input/index.html"><span class="identifier">SimulateReversalInput</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../com.sudoplatform.sudovirtualcards.simulator.types.outputs/-simulate-reversal-response/index.html"><span class="identifier">SimulateReversalResponse</span></a></code>
+<p>Simulate an authorization reversal transaction.</p>
+<p>Reversals do not generate a transaction the user can see, but will instead reverse an existing authorization in the  pending
+transaction. A reversal can be partial, which will cause the authorization transaction to be decremented by the input amount,
+or can be reversed the entire amount. If the entire amount is reversed, the authorization transaction record will be deleted.</p>
+<p>Reversals cannot exceed the total of the authorization, otherwise an error will be returned and no operation will be performed.</p>
+<h3>Parameters</h3>
+<p><a name="request"></a>
+<code>request</code> - The data needed to create the reversal</p>
+<p><strong>Return</strong><br/>
+The details of the reversal</p>
+</BODY>
+</HTML>

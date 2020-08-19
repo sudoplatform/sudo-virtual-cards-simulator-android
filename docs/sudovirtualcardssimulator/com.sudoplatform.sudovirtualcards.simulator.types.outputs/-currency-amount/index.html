@@ -1,0 +1,57 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>CurrencyAmount - sudovirtualcardssimulator</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../index.html">com.sudoplatform.sudovirtualcards.simulator.types.outputs</a>&nbsp;/&nbsp;<a href="./index.html">CurrencyAmount</a><br/>
+<br/>
+<h1>CurrencyAmount</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">CurrencyAmount</span>&nbsp;<span class="symbol">:</span>&nbsp;<span class="identifier">Parcelable</span></code>
+<p>A currency available in the virtual card simulator. The conversion rates are expressed as <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>
+that are the relative values between all the currencies. To convert one currency to another find
+the conversion rates of the two currencies, convert to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>, divide them then use that relative
+value to perform the currency conversion.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">CurrencyAmount</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount$<init>(kotlin.String, kotlin.Int)/currency">currency</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount$<init>(kotlin.String, kotlin.Int)/amount">amount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">)</span></code>
+<p>A currency available in the virtual card simulator. The conversion rates are expressed as <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>
+that are the relative values between all the currencies. To convert one currency to another find
+the conversion rates of the two currencies, convert to <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-double/index.html">Double</a>, divide them then use that relative
+value to perform the currency conversion.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="amount.html">amount</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">amount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a></code>
+<p>The amount of a single unit of currency relative to the other currencies in the simulator</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="currency.html">currency</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">currency</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
+<p>The ISO 4217 currency code</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

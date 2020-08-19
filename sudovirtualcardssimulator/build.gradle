@@ -1,0 +1,239 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.amazonaws.appsync'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: "org.owasp.dependencycheck"
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode = 1
+        versionName = "1.0.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testApplicationId = "com.sudoplatform.sudovirtualcards.simulator.test"
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            testCoverageEnabled true
+        }
+    }
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    resourcePrefix 'svcs_'
+
+    packagingOptions {
+        pickFirst("META-INF/atomicfu.kotlin_module")
+        pickFirst("META-INF/kotlinx-coroutines-core.kotlin_module")
+    }
+
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all {
+            // Default heap size (512) was starting to cause out of memory issues
+            maxHeapSize = '2048m'
+            outputs.upToDateWhen {false}
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
+}
+
+dependencies {
+    // Kotlin
+    def coroutine_version = "1.3.8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:$coroutine_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
+
+    // AWS
+    implementation "com.amazonaws:aws-android-sdk-core:$core_version"
+    implementation "com.amazonaws:aws-android-sdk-appsync:$appsync_version"
+
+    // Sudo Platform
+    implementation "com.sudoplatform:sudouser:8.0.5"
+    implementation "com.sudoplatform:sudoprofiles:3.1.7"
+    implementation "com.sudoplatform:sudoidentityverification:3.0.0"
+    implementation "com.sudoplatform:sudovirtualcards:1.0.10"
+
+    // Testing
+    def kotlintest_version = "3.3.2"
+
+    testImplementation "junit:junit:4.13"
+    testImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0"
+    testImplementation "com.jakewharton.timber:timber:4.7.1"
+
+    androidTestImplementation "androidx.test.ext:junit:1.1.1"
+    androidTestImplementation "androidx.test:runner:1.2.0"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.2.0"
+    androidTestImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
+    androidTestImplementation "com.jakewharton.timber:timber:4.7.1"
+    androidTestImplementation "com.google.guava:guava:27.1-android"
+}
+
+// Returns a list of `configurations` which should not be scanned for vulnerabilities
+def getConfigurationsToSkip = { configs ->
+    configs.findAll {
+        it.name.startsWithAny("androidTest", "test", "lint") ||
+                it.name.contains("AndroidTest") ||
+                it.name.contains("UnitTest")
+    }.collect {
+        it.name
+    }
+}
+
+tasks.register("printConfigurationsToSkip") {
+    group = "OWASP dependency-check"
+    description = "Print the configurations which are skipped when scanning for vulnerable dependencies"
+    doLast {
+        println "Configurations to skip when scanning for vulnerable dependencies:"
+        println getConfigurationsToSkip(configurations).join("\n")
+    }
+}
+
+afterEvaluate {
+    // NOTE: this must be within `afterEvaluate` to ensure all the configurations have been created before filtering them
+    dependencyCheck {
+        suppressionFile file("../dependency-suppression.xml").toString()
+        failBuildOnCVSS 0
+        skipConfigurations = getConfigurationsToSkip(configurations)
+    }
+}
+
+// https://github.com/cookpad/license-tools-plugin
+apply plugin: "com.cookpad.android.licensetools"
+
+licenseTools {
+    licensesYaml = file("licenses.yml")
+    ignoredGroups = ["com.nhaarman:mockito-kotlin", "com.anonyome", "com.sudoplatform"]
+    ignoredProjects = ["org.mockito"]
+}
+
+@Grab('org.yaml:snakeyaml:1.17') // Yaml parser
+import org.yaml.snakeyaml.Yaml
+
+task checkLicenseHaveRequiredFields {
+    description = "Check every license entry has the mandatory fields"
+    group = "verification"
+
+    doLast {
+        def mandatoryFields = ["artifact", "name", "copyrightHolder", "url"]
+        Yaml parser = new Yaml()
+        def licenses = parser.load((file("licenses.yml") as File).text)
+        def errors = new StringBuilder()
+        licenses.each { artifact ->
+            mandatoryFields.each { field ->
+                if (artifact[field] == null) {
+                    errors.append("License entry '${artifact.artifact}' is missing required element `$field`\n")
+                }
+            }
+            if (artifact["license"] == null && artifact["licenseUrl" == null]) {
+                errors.append("License entry '${artifact.artifact}' must have one of [license,licenseUrl]\n")
+            }
+        }
+        if (errors.length() > 0) {
+            throw new GradleException("Missing license elements:\n$errors")
+        }
+    }
+}
+checkLicenses.finalizedBy checkLicenseHaveRequiredFields
+
+// Kotlin Lint
+apply plugin: 'org.jmailen.kotlinter'
+
+kotlinter {
+    ignoreFailures = false
+    reporters = ['checkstyle', 'plain']
+    experimentalRules = false
+    fileBatchSize = 30
+}
+
+// Apollo Code Generation
+apollo {
+    outputPackageName = "com.sudoplatform.sudovirtualcards.simulator.graphql"
+}
+
+// Jacoco test coverage
+apply plugin: 'jacoco'
+
+task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
+    group = "Reporting"
+    description = "Generate Jacoco coverage reports"
+    classDirectories.setFrom(fileTree(
+            dir: "${buildDir}/tmp/kotlin-classes/debug",
+            excludes: ['**/R.class',
+                       '**/R$*.class',
+                       '**/BuildConfig.*',
+                       '**/Manifest*.*']
+        )
+    )
+    sourceDirectories.setFrom(files("${buildDir.parent}/sudovirtualcardssimulator/src/main/java"))
+    executionData.setFrom(fileTree(["dir":"$buildDir", "includes":["**/*.exec", "**/*.ec"]]))
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
+}
+
+// Dokka documentation generation
+apply plugin: 'org.jetbrains.dokka'
+
+dokka {
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+
+
+    // Root URL of the generated documentation to link with. The trailing slash is required!
+    externalDocumentationLink {
+        url = new URL("https://sudoplatform.github.io/sudo-user-android/sudouser/")
+    }
+}
+
+// Sonarqube code analysis
+if (project.file("${rootProject.projectDir}/util/sonarqube.gradle").exists()) {
+    ext.sonarProjectKey = "sudo-virtual-cards-android-simulator"
+    ext.sonarProjectName = "sudo-virtual-cards-android-simulator"
+    ext.sonarExclusions = ["*.png", "*.jks", "*.json", "*.key"]
+    apply from: "${rootProject.projectDir}/util/sonarqube.gradle"
+}
+
+// Setup common publishing variables
+ext {
+    projectGroup = 'com.sudoplatform'
+    projectArtifact = project.name
+    projectDescription = 'Sudo Virtual Cards Simulator SDK for the Sudo Platform by Anonyome Labs.'
+    projectUrl = 'https://github.com/sudoplatform/sudo-virtual-cards-simulator-android'
+    projectSCM = 'scm:git:github.com/sudoplatform/sudo-virtual-cards-simulator-android.git'
+    if (project.findProperty("tag")) {
+        projectVersion = "$tag"
+    } else {
+        projectVersion = project.android.defaultConfig.versionName
+    }
+}
+
+// Internal and External publishing
+if(project.findProperty("tag") &&
+        project.file("${rootProject.projectDir}/util/publish-mavencentral.gradle").exists()) {
+    apply from: "${rootProject.projectDir}/util/publish-mavencentral.gradle"
+}
+else if (project.file("${rootProject.projectDir}/util/publish-internal-android.gradle").exists()) {
+    apply from: "${rootProject.projectDir}/util/publish-internal-android.gradle"
+}

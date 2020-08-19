@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SudoVirtualCardsSimulatorClient.simulateDebit - sudovirtualcardssimulator</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../index.html">com.sudoplatform.sudovirtualcards.simulator</a>&nbsp;/&nbsp;<a href="index.html">SudoVirtualCardsSimulatorClient</a>&nbsp;/&nbsp;<a href="./simulate-debit.html">simulateDebit</a><br/>
+<br/>
+<h1>simulateDebit</h1>
+<a name="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateDebit(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput)"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">simulateDebit</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateDebit(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput)/request">request</span><span class="symbol">:</span>&nbsp;<a href="../../com.sudoplatform.sudovirtualcards.simulator.types.inputs/-simulate-debit-input/index.html"><span class="identifier">SimulateDebitInput</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../com.sudoplatform.sudovirtualcards.simulator.types.outputs/-simulate-debit-response/index.html"><span class="identifier">SimulateDebitResponse</span></a></code>
+<p>Simulate a debit transaction.</p>
+<p>Simulating a debit will generate a transaction. Simulating a debit does not modify any existing records, and instead generates a
+new debit transaction</p>
+<p>Debits can only be performed against a transaction that has already been previously authorized. Authorizations can also be partially
+debited, which will generate a debit record of the partially debited amount.</p>
+<p>Debits <strong>can</strong> exceed the total amount of a authorization.</p>
+<h3>Parameters</h3>
+<p><a name="request"></a>
+<code>request</code> - The data needed to create the debit</p>
+<p><strong>Return</strong><br/>
+The details of the debit</p>
+</BODY>
+</HTML>

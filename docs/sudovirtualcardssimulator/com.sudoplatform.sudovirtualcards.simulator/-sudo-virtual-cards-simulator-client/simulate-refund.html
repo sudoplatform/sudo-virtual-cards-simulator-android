@@ -1,0 +1,25 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SudoVirtualCardsSimulatorClient.simulateRefund - sudovirtualcardssimulator</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../index.html">com.sudoplatform.sudovirtualcards.simulator</a>&nbsp;/&nbsp;<a href="index.html">SudoVirtualCardsSimulatorClient</a>&nbsp;/&nbsp;<a href="./simulate-refund.html">simulateRefund</a><br/>
+<br/>
+<h1>simulateRefund</h1>
+<a name="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateRefund(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundInput)"></a>
+<code><span class="keyword">abstract</span> <span class="keyword">suspend</span> <span class="keyword">fun </span><span class="identifier">simulateRefund</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient$simulateRefund(com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundInput)/request">request</span><span class="symbol">:</span>&nbsp;<a href="../../com.sudoplatform.sudovirtualcards.simulator.types.inputs/-simulate-refund-input/index.html"><span class="identifier">SimulateRefundInput</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="../../com.sudoplatform.sudovirtualcards.simulator.types.outputs/-simulate-refund-response/index.html"><span class="identifier">SimulateRefundResponse</span></a></code>
+<p>Simulate a refund transaction.</p>
+<p>Simulating a refund will generate a refund transaction. Simulating a refund does not modify any existing records, and instead
+generates a new refund transaction.</p>
+<p>Refunds can only be performed against a transaction that has already been previously debited. Debits can also be partially refunded,
+which will generate a new refund transaction record of the partially refunded amount.</p>
+<p>Refunds cannot exceed the total amount of a debit, otherwise an error will be returned and no operation will be performed.</p>
+<h3>Parameters</h3>
+<p><a name="request"></a>
+<code>request</code> - The data needed to create the refund</p>
+<p><strong>Return</strong><br/>
+The details of the refund</p>
+</BODY>
+</HTML>

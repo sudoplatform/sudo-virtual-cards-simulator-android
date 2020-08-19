@@ -1,0 +1,97 @@
+<HTML>
+<HEAD>
+<meta charset="UTF-8">
+<title>SimulateAuthorizationResponse - sudovirtualcardssimulator</title>
+<link rel="stylesheet" href="../../../style.css">
+</HEAD>
+<BODY>
+<a href="../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../index.html">com.sudoplatform.sudovirtualcards.simulator.types.outputs</a>&nbsp;/&nbsp;<a href="./index.html">SimulateAuthorizationResponse</a><br/>
+<br/>
+<h1>SimulateAuthorizationResponse</h1>
+<code><span class="keyword">data</span> <span class="keyword">class </span><span class="identifier">SimulateAuthorizationResponse</span></code>
+<p>An authorization created in the simulator.</p>
+<h3>Constructors</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="-init-.html">&lt;init&gt;</a></p>
+</td>
+<td>
+<code><span class="identifier">SimulateAuthorizationResponse</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/id">id</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/isApproved">isApproved</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a><span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/amount">amount</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/currency">currency</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/declineReason">declineReason</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span>&nbsp;<span class="symbol">=</span>&nbsp;null<span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/createdAt">createdAt</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/Date.html"><span class="identifier">Date</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Date(System.currentTimeMillis())<span class="symbol">, </span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse$<init>(kotlin.String, kotlin.Boolean, kotlin.Int, kotlin.String, kotlin.String, java.util.Date, java.util.Date)/updatedAt">updatedAt</span><span class="symbol">:</span>&nbsp;<a href="https://docs.oracle.com/javase/6/docs/api/java/util/Date.html"><span class="identifier">Date</span></a>&nbsp;<span class="symbol">=</span>&nbsp;Date(System.currentTimeMillis())<span class="symbol">)</span></code>
+<p>An authorization created in the simulator.</p>
+</td>
+</tr>
+</tbody>
+</table>
+<h3>Properties</h3>
+<table>
+<tbody>
+<tr>
+<td>
+<p><a href="amount.html">amount</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">amount</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html"><span class="identifier">Int</span></a><span class="symbol">?</span></code>
+<p>The amount of the transaction being authorized or declined in the merchant's minor currency e.g. cents for USD.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="created-at.html">createdAt</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">createdAt</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/6/docs/api/java/util/Date.html"><span class="identifier">Date</span></a></code>
+<p>When this authorization was created.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="currency.html">currency</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">currency</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code>
+<p>ISO 4217 currency code in which the merchant charges</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="decline-reason.html">declineReason</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">declineReason</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">?</span></code>
+<p>Why the transaction is being declined. Null if it is being authorized.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="id.html">id</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">id</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a></code>
+<p>Identifier of this authorization response. If approved, <a href="id.html">id</a> may be used in subsequent incremental authorizations,
+reversals and debits.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="is-approved.html">isApproved</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">isApproved</span><span class="symbol">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html"><span class="identifier">Boolean</span></a></code>
+<p>True if the transaction is authorized, false if it is declined.</p>
+</td>
+</tr>
+<tr>
+<td>
+<p><a href="updated-at.html">updatedAt</a></p>
+</td>
+<td>
+<code><span class="keyword">val </span><span class="identifier">updatedAt</span><span class="symbol">: </span><a href="https://docs.oracle.com/javase/6/docs/api/java/util/Date.html"><span class="identifier">Date</span></a></code>
+<p>When this authorization was most recently updated.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</BODY>
+</HTML>

@@ -1,0 +1,97 @@
+# this is an auto generated file. This will be overwritten
+query Ping {
+  ping
+}
+query ListSimulatorMerchants {
+  listSimulatorMerchants {
+    id
+    description
+    name
+    mcc
+    city
+    state
+    postalCode
+    country
+    currency
+    declineAfterAuthorization
+    declineBeforeAuthorization
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+query ListSimulatorConversionRates {
+  listSimulatorConversionRates {
+    currency
+    amount
+  }
+}
+mutation SimulateAuthorization($input: SimulateAuthorizationRequest!) {
+  simulateAuthorization(input: $input) {
+    id
+    approved
+    billedAmount {
+      currency
+      amount
+    }
+    declineReason
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+mutation SimulateIncrementalAuthorization(
+  $input: SimulateIncrementalAuthorizationRequest!
+) {
+  simulateIncrementalAuthorization(input: $input) {
+    id
+    approved
+    billedAmount {
+      currency
+      amount
+    }
+    declineReason
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+mutation SimulateReversal($input: SimulateReversalRequest!) {
+  simulateReversal(input: $input) {
+    id
+    billedAmount {
+      currency
+      amount
+    }
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+mutation SimulateAuthorizationExpiry(
+  $input: SimulateAuthorizationExpiryRequest!
+) {
+  simulateAuthorizationExpiry(input: $input) {
+    id
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+mutation SimulateRefund($input: SimulateRefundRequest!) {
+  simulateRefund(input: $input) {
+    id
+    billedAmount {
+      currency
+      amount
+    }
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
+mutation SimulateDebit($input: SimulateDebitRequest!) {
+  simulateDebit(input: $input) {
+    id
+    billedAmount {
+      currency
+      amount
+    }
+    createdAtEpochMs
+    updatedAtEpochMs
+  }
+}
