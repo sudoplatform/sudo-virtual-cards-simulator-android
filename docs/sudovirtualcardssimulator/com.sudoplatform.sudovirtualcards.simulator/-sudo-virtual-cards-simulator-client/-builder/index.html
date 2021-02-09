@@ -1,96 +1,286 @@
-<HTML>
-<HEAD>
-<meta charset="UTF-8">
-<title>SudoVirtualCardsSimulatorClient.Builder - sudovirtualcardssimulator</title>
-<link rel="stylesheet" href="../../../../style.css">
-</HEAD>
-<BODY>
-<a href="../../../index.html">sudovirtualcardssimulator</a>&nbsp;/&nbsp;<a href="../../index.html">com.sudoplatform.sudovirtualcards.simulator</a>&nbsp;/&nbsp;<a href="../index.html">SudoVirtualCardsSimulatorClient</a>&nbsp;/&nbsp;<a href="./index.html">Builder</a><br/>
-<br/>
-<h1>Builder</h1>
-<code><span class="keyword">class </span><span class="identifier">Builder</span></code>
-<p>Builder used to construct the <a href="../index.html">SudoVirtualCardsSimulatorClient</a>.</p>
-<h3>Constructors</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="-init-.html">&lt;init&gt;</a></p>
-</td>
-<td>
-<code><span class="identifier">Builder</span><span class="symbol">(</span><span class="symbol">)</span></code>
-<p>Builder used to construct the <a href="../index.html">SudoVirtualCardsSimulatorClient</a>.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<h3>Functions</h3>
-<table>
-<tbody>
-<tr>
-<td>
-<p><a href="build.html">build</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">build</span><span class="symbol">(</span><span class="symbol">)</span><span class="symbol">: </span><a href="../index.html"><span class="identifier">SudoVirtualCardsSimulatorClient</span></a></code>
-<p>Construct the <a href="../index.html">SudoVirtualCardsSimulatorClient</a>. Will throw a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if
-the <a href="#">context</a>, <a href="#">username</a> or <a href="#">password</a> are needed and have not been provided. Will also throw
-<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if the configuration file does not supply the adminApiService
-section with the elements apiUrl, poolId, region and clientId.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="set-app-sync-client.html">setAppSyncClient</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">setAppSyncClient</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient.Builder$setAppSyncClient(com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient)/client">client</span><span class="symbol">:</span>&nbsp;<span class="identifier">AWSAppSyncClient</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SudoVirtualCardsSimulatorClient.Builder</span></a></code>
-<p>Provide an <a href="#">AWSAppSyncClient</a> for the <a href="../index.html">SudoVirtualCardsSimulatorClient</a> to use
-(optional input). If you do not supply this value an <a href="#">AWSAppSyncClient</a> will
-be constructed and used. If you provide the <a href="#">AWSAppSyncClient</a> via this method
-you do not need to provide the <a href="#">context</a>, <a href="#">username</a> and <a href="#">password</a>.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="set-context.html">setContext</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">setContext</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient.Builder$setContext(android.content.Context)/context">context</span><span class="symbol">:</span>&nbsp;<span class="identifier">Context</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SudoVirtualCardsSimulatorClient.Builder</span></a></code>
-<p>Provide the application context (required input).</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="set-logger.html">setLogger</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">setLogger</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient.Builder$setLogger(com.sudoplatform.sudologging.Logger)/logger">logger</span><span class="symbol">:</span>&nbsp;<span class="identifier">Logger</span><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SudoVirtualCardsSimulatorClient.Builder</span></a></code>
-<p>Provide the implementation of the <a href="#">Logger</a> used for logging errors (optional input).
-If a value is not supplied a default implementation will be used.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="set-password.html">setPassword</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">setPassword</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient.Builder$setPassword(kotlin.String)/password">password</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SudoVirtualCardsSimulatorClient.Builder</span></a></code>
-<p>Provide the password to authenticate with the simulator.
-This is required input if you are not supplying your own <a href="#">AWSAppSyncClient</a>.</p>
-</td>
-</tr>
-<tr>
-<td>
-<p><a href="set-username.html">setUsername</a></p>
-</td>
-<td>
-<code><span class="keyword">fun </span><span class="identifier">setUsername</span><span class="symbol">(</span><span class="identifier" id="com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient.Builder$setUsername(kotlin.String)/username">username</span><span class="symbol">:</span>&nbsp;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html"><span class="identifier">String</span></a><span class="symbol">)</span><span class="symbol">: </span><a href="./index.html"><span class="identifier">SudoVirtualCardsSimulatorClient.Builder</span></a></code>
-<p>Provide the username to authenticate with the simulator.
-This is required input if you are not supplying your own <a href="#">AWSAppSyncClient</a>.</p>
-</td>
-</tr>
-</tbody>
-</table>
-</BODY>
-</HTML>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>Builder</title>
+    <link href="../../../../styles/style.css" rel="Stylesheet">
+    <script type="text/javascript" src="../../../../scripts/navigationLoader.js" async="async"></script>
+    <script type="text/javascript" src="../../../../scripts/platformContentHandler.js" async="async"></script>
+    <script type="text/javascript" src="../../../../scripts/sourceset_dependencies.js" async="async"></script>
+    <script type="text/javascript" src="../../../../scripts/clipboard.js" async="async"></script>
+    <link href="../../../../styles/jetbrains-mono.css" rel="Stylesheet">
+    <script>var pathToRoot = "../../../../";</script>
+  </head>
+  <body>
+    <div id="container">
+      <div id="leftColumn">
+        <div id="logo"></div>
+        <div id="paneSearch"></div>
+        <div id="sideMenu"></div>
+      </div>
+      <div id="main">
+        <div id="searchBar"></div>
+        <script type="text/javascript" src="../../../../scripts/pages.js"></script>
+        <script type="text/javascript" src="../../../../scripts/main.js"></script>
+        <div id="content" pageIds="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder///PointingToDeclaration/">
+          <div class="breadcrumbs"><a href="../../../index.html">sudovirtualcardssimulator</a>/<a href="../../index.html">com.sudoplatform.sudovirtualcards.simulator</a>/<a href="../index.html">SudoVirtualCardsSimulatorClient</a>/<a href="index.html">Builder</a></div>
+          <div class="cover ">
+            <h1 class="cover"><a data-name="builder"></a><span>Builder</span></h1>
+            <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><p class="paragraph">Builder used to construct the <a href="../index.html">SudoVirtualCardsSimulatorClient</a>.</p><div class="symbol monospace">class <a href="index.html">Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+          </div>
+          <div class="tabbedcontent">
+            <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Functions">Functions</button></div>
+            <div class="tabs-section-body">
+              <h2 class=""><a data-name="functions"></a>Functions</h2>
+              <div class="table" data-togglable="Functions"><a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/build/#/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="build.html">build</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/build/#/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Construct the <a href="../index.html">SudoVirtualCardsSimulatorClient</a>. Will throw a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if the <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/context/#/PointingToDeclaration/">context</span>, <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/username/#/PointingToDeclaration/">username</span> or <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/password/#/PointingToDeclaration/">password</span> are needed and have not been provided. Will also throw <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-null-pointer-exception/index.html">NullPointerException</a> if the configuration file does not supply the adminApiService section with the elements apiUrl, poolId, region and clientId.</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="build.html">build</a>(): <a href="../index.html">SudoVirtualCardsSimulatorClient</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="kotlin/Any/equals/#kotlin.Any?/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/equals.html">equals</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="kotlin/Any/equals/#kotlin.Any?/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">open operator override fun <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/equals.html">equals</a>(other: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/index.html">Any</a>?): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="kotlin/Any/hashCode/#/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/hash-code.html">hashCode</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="kotlin/Any/hashCode/#/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">open override fun <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/hash-code.html">hashCode</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setAppSyncClient/#com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="set-app-sync-client.html">setAppSyncClient</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setAppSyncClient/#com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Provide an <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span> for the <a href="../index.html">SudoVirtualCardsSimulatorClient</a> to use (optional input). If you do not supply this value an <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span> will be constructed and used. If you provide the <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span> via this method you do not need to provide the <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/context/#/PointingToDeclaration/">context</span>, <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/username/#/PointingToDeclaration/">username</span> and <span data-unresolved-link="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/password/#/PointingToDeclaration/">password</span>.</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="set-app-sync-client.html">setAppSyncClient</a>(client: <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span>): <a href="index.html">SudoVirtualCardsSimulatorClient.Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setContext/#android.content.Context/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="set-context.html">setContext</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setContext/#android.content.Context/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Provide the application context (required input).</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="set-context.html">setContext</a>(context: <a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a>): <a href="index.html">SudoVirtualCardsSimulatorClient.Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setLogger/#com.sudoplatform.sudologging.Logger/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="set-logger.html">setLogger</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setLogger/#com.sudoplatform.sudologging.Logger/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Provide the implementation of the <span data-unresolved-link="com.sudoplatform.sudologging/Logger///PointingToDeclaration/">Logger</span> used for logging errors (optional input). If a value is not supplied a default implementation will be used.</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="set-logger.html">setLogger</a>(logger: <span data-unresolved-link="com.sudoplatform.sudologging/Logger///PointingToDeclaration/">Logger</span>): <a href="index.html">SudoVirtualCardsSimulatorClient.Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setPassword/#kotlin.String/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="set-password.html">setPassword</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setPassword/#kotlin.String/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Provide the password to authenticate with the simulator. This is required input if you are not supplying your own <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span>.</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="set-password.html">setPassword</a>(password: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="index.html">SudoVirtualCardsSimulatorClient.Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setUsername/#kotlin.String/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="set-username.html">setUsername</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="com.sudoplatform.sudovirtualcards.simulator/SudoVirtualCardsSimulatorClient.Builder/setUsername/#kotlin.String/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"><div class="brief "><p class="paragraph">Provide the username to authenticate with the simulator. This is required input if you are not supplying your own <span data-unresolved-link="com.amazonaws.mobileconnectors.appsync/AWSAppSyncClient///PointingToDeclaration/">AWSAppSyncClient</span>.</p></div></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">fun <a href="set-username.html">setUsername</a>(username: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>): <a href="index.html">SudoVirtualCardsSimulatorClient.Builder</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+<a data-name="kotlin/Any/toString/#/PointingToDeclaration/"></a>
+                <div class="table-row" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release">
+                  <div class="main-subrow "><span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="kotlin/Any/toString/#/PointingToDeclaration/"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M21.2496 5.3C20.3496 4.5 19.2496 4 18.0496 4C16.8496 4 15.6496 4.5 14.8496 5.3L10.3496 9.8L11.7496 11.2L16.2496 6.7C17.2496 5.7 18.8496 5.7 19.8496 6.7C20.8496 7.7 20.8496 9.3 19.8496 10.3L15.3496 14.8L16.7496 16.2L21.2496 11.7C22.1496 10.8 22.5496 9.7 22.5496 8.5C22.5496 7.3 22.1496 6.2 21.2496 5.3Z"/>
+    <path d="M8.35 16.7998C7.35 17.7998 5.75 17.7998 4.75 16.7998C3.75 15.7998 3.75 14.1998 4.75 13.1998L9.25 8.6998L7.85 7.2998L3.35 11.7998C1.55 13.5998 1.55 16.3998 3.35 18.1998C4.25 19.0998 5.35 19.4998 6.55 19.4998C7.75 19.4998 8.85 19.0998 9.75 18.1998L14.25 13.6998L12.85 12.2998L8.35 16.7998Z"/>
+</svg></span>
+                        <div class="copy-popup-wrapper "><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Link copied to clipboard</span></div>
+                      </span></span></div>
+                  <div class="platform-dependent-row keyValue">
+                    <div></div>
+                    <div class="title"><div class="divergent-group" data-filterable-current=":sudovirtualcardssimulator/release" data-filterable-set=":sudovirtualcardssimulator/release"><div class="brief-with-platform-tags"><div class="inner-brief-with-platform-tags"></div>
+<span class="pull-right"></span></div>
+
+  <div class="main-subrow">
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":sudovirtualcardssimulator/release"><div class="symbol monospace">open override fun <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-any/to-string.html">toString</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="top-right-position"><span class="copy-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M5 4H15V16H5V4ZM17 7H19V18V20H17H8V18H17V7Z" fill="black"/>
+                       </svg></span><div class="copy-popup-wrapper popup-to-left"><svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M18 9C18 14 14 18 9 18C4 18 0 14 0 9C0 4 4 0 9 0C14 0 18 4 18 9ZM14.2 6.2L12.8 4.8L7.5 10.1L5.3 7.8L3.8 9.2L7.5 13L14.2 6.2Z" fill="#4DBB5F"/>
+</svg><span>Content copied to clipboard</span></div></span></div></div></div>
+  </div>
+</div>
+</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#container"><svg width="12" height="10" viewBox="0 0 12 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M11.3337 9.66683H0.666992L6.00033 3.66683L11.3337 9.66683Z" fill="black"/>
+    <path d="M0.666992 0.333496H11.3337V1.66683H0.666992V0.333496Z" fill="black"/>
+</svg></a></span><span>© 2020 Copyright</span><span class="pull-right"><span>Sponsored and developed by dokka</span><a href="https://github.com/Kotlin/dokka"><span class="padded-icon"><svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M8 0H2.3949L4.84076 2.44586L0 7.28662L0.713376 8L5.55414 3.15924L8 5.6051V0Z" fill="black"/>
+</svg></span></a></span></div>
+      </div>
+    </div>
+  </body>
+</html>
+

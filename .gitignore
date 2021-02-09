@@ -57,3 +57,5 @@ kits.gradle
 package-lock.json
 node_modules
 sudoplatformconfig.json
+anonyome_ssm_parameter_register_key.json
+anonyome_ssm_parameter_register_public_key.json

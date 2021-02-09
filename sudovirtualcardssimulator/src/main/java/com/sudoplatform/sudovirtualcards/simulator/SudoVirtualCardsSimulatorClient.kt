@@ -31,6 +31,8 @@ import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateReversa
  *
  * This interface allows you to simulate the use of a virtual card at merchants to generate transaction events.
  * The simulator is only available in sandbox environments.
+ *
+ * @sample com.sudoplatform.sudovirtualcards.simulator.samples.Samples.sudoVirtualCardsSimulatorClient
  */
 interface SudoVirtualCardsSimulatorClient {
 
@@ -43,7 +45,7 @@ interface SudoVirtualCardsSimulatorClient {
     /**
      * Builder used to construct the [SudoVirtualCardsSimulatorClient].
      */
-    class Builder {
+    class Builder internal constructor() {
         private var context: Context? = null
         private var username: String? = null
         private var password: String? = null

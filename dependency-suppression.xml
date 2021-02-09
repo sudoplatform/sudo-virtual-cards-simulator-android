@@ -6,11 +6,18 @@
             ]]></notes>
         <cve>CVE-2018-20200</cve>
     </suppress>
-    <suppress until="2020-10-12">
+    <suppress until="2021-04-30">
         <notes><![CDATA[
             Kotlin script is not used in the Sudo Platform Virtual Cards Simulator SDK. Set suppression to expire in
             2 months. We can re-evaluate and possible move to Kotlin 1.4.0 if it's out of RC by then.
             ]]></notes>
         <cve>CVE-2020-15824</cve>
+    </suppress>
+    <suppress until="2021-04-30">
+        <notes><![CDATA[
+            False positive. We're at Kotlin 1.4.30 which is beyond 1.4.21 when fix was available. False positive
+            occurs because the kotlin coroutines libraries are at 1.4.2 and match the broad CPE pattern.
+            ]]></notes>
+        <cve>CVE-2020-29582</cve>
     </suppress>
 </suppressions>

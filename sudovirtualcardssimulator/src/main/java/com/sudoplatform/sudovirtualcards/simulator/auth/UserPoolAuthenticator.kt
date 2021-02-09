@@ -84,49 +84,55 @@ internal class AWSUserPoolAuthenticator(
 
         val configuration = AWSConfiguration(JSONObject(configurationJson))
 
-        mobileClient.initialize(context, configuration, object : Callback<UserStateDetails> {
+        mobileClient.initialize(
+            context, configuration,
+            object : Callback<UserStateDetails> {
 
-            override fun onResult(userState: UserStateDetails?) {
-                userState?.let {
-                    actualState = when (it.userState) {
-                        UserState.GUEST,
+                override fun onResult(userState: UserStateDetails?) {
+                    userState?.let {
+                        actualState = when (it.userState) {
+                            UserState.GUEST,
                             UserState.SIGNED_IN -> UserPoolAuthenticator.State.SIGNED_IN
-                        UserState.SIGNED_OUT_FEDERATED_TOKENS_INVALID,
+                            UserState.SIGNED_OUT_FEDERATED_TOKENS_INVALID,
                             UserState.SIGNED_OUT_USER_POOLS_TOKENS_INVALID,
                             UserState.SIGNED_OUT -> UserPoolAuthenticator.State.SIGNED_OUT
-                        else -> UserPoolAuthenticator.State.UNKNOWN
+                            else -> UserPoolAuthenticator.State.UNKNOWN
+                        }
                     }
+                    cont.resume(Unit)
                 }
-                cont.resume(Unit)
-            }
 
-            override fun onError(e: Exception?) {
-                logger.error("initialize $e")
-                actualState = UserPoolAuthenticator.State.UNKNOWN
-                cont.resumeWithException(e as Throwable)
+                override fun onError(e: Exception?) {
+                    logger.error("initialize $e")
+                    actualState = UserPoolAuthenticator.State.UNKNOWN
+                    cont.resumeWithException(e as Throwable)
+                }
             }
-        })
+        )
     }
 
     override suspend fun signIn(username: String, password: String) = suspendCoroutine<Unit> { cont ->
 
-        mobileClient.signIn(username, password, object : Callback<SignInResult> {
+        mobileClient.signIn(
+            username, password,
+            object : Callback<SignInResult> {
 
-            override fun onResult(result: SignInResult?) {
-                result?.signInState?.let {
-                    actualState = when (it) {
-                        SignInState.DONE -> UserPoolAuthenticator.State.SIGNED_IN
-                        else -> UserPoolAuthenticator.State.UNKNOWN
+                override fun onResult(result: SignInResult?) {
+                    result?.signInState?.let {
+                        actualState = when (it) {
+                            SignInState.DONE -> UserPoolAuthenticator.State.SIGNED_IN
+                            else -> UserPoolAuthenticator.State.UNKNOWN
+                        }
                     }
+                    cont.resume(Unit)
                 }
-                cont.resume(Unit)
-            }
 
-            override fun onError(e: Exception?) {
-                logger.error("signIn $e")
-                cont.resumeWithException(e as Throwable)
+                override fun onError(e: Exception?) {
+                    logger.error("signIn $e")
+                    cont.resumeWithException(e as Throwable)
+                }
             }
-        })
+        )
     }
 
     override suspend fun getTokens() = suspendCoroutine<Tokens?> { cont ->

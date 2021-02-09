@@ -466,9 +466,10 @@ private fun ApolloException.isAuthenticationFailure(): Pair<String, Throwable>? 
     while (cause != null) {
         val msg = cause.message
         if (msg != null && (
-                msg.contains("Cognito User Pools token") ||
-                    msg.contains("Cognito Identity") ||
-                    msg.contains("Cognito UserPool"))
+            msg.contains("Cognito User Pools token") ||
+                msg.contains("Cognito Identity") ||
+                msg.contains("Cognito UserPool")
+            )
         ) {
             return Pair(msg, cause)
         }

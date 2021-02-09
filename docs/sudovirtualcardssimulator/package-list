@@ -1,8 +1,7 @@
-$dokka.format:html
+$dokka.format:html-v1
 $dokka.linkExtension:html
 
 com.sudoplatform.sudovirtualcards.simulator
-com.sudoplatform.sudovirtualcards.simulator.graphql
-com.sudoplatform.sudovirtualcards.simulator.graphql.type
 com.sudoplatform.sudovirtualcards.simulator.types.inputs
 com.sudoplatform.sudovirtualcards.simulator.types.outputs
+
