@@ -1,1 +1,1 @@
-sourceset_dependencies = '{":sudovirtualcardssimulator/debug": [], ":sudovirtualcardssimulator/main": [], ":sudovirtualcardssimulator/release": []}'
+sourceset_dependencies = '{":sudovirtualcardssimulator:dokkaHtml/androidTestRelease": [], ":sudovirtualcardssimulator:dokkaHtml/debug": [], ":sudovirtualcardssimulator:dokkaHtml/main": [], ":sudovirtualcardssimulator:dokkaHtml/release": []}'

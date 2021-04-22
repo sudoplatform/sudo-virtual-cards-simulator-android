@@ -7,6 +7,7 @@
 package com.sudoplatform.sudovirtualcards.simulator.appsync
 
 import android.content.Context
+import com.amazonaws.mobile.config.AWSConfiguration
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.amazonaws.regions.Regions
 import com.babylon.certificatetransparency.certificateTransparencyInterceptor
@@ -14,6 +15,7 @@ import com.sudoplatform.sudoconfigmanager.DefaultSudoConfigManager
 import com.sudoplatform.sudouser.ConvertSslErrorsInterceptor
 import com.sudoplatform.sudovirtualcards.simulator.auth.SimulatorCognitoUserPoolAuthProvider
 import okhttp3.OkHttpClient
+import org.json.JSONObject
 import java.util.Objects
 
 /**
@@ -50,6 +52,24 @@ internal class AWSAppSyncClientFactory {
             Objects.requireNonNull(clientId, "Config file adminApiService section must supply clientId")
             Objects.requireNonNull(region, "Config file adminApiService section must supply region")
 
+            val awsConfig = JSONObject(
+                """
+                {
+                    'CognitoUserPool': {
+                        'Default': {
+                            'PoolId': '$poolId',
+                            'AppClientId': '$clientId',
+                            "Region": "$region"
+                        }
+                    },
+                    'AppSync': {
+                        'Default': {
+                            'ApiUrl': '$apiUrl', 'Region': '$region', 'AuthMode': 'AMAZON_COGNITO_USER_POOLS'}
+                    }
+                }
+                """.trimIndent()
+            )
+
             val authProvider = SimulatorCognitoUserPoolAuthProvider(
                 context = context,
                 poolId = poolId!!,
@@ -63,6 +83,7 @@ internal class AWSAppSyncClientFactory {
                 .context(context)
                 .serverUrl(apiUrl)
                 .cognitoUserPoolsAuthProvider(authProvider)
+                .awsConfiguration(AWSConfiguration(awsConfig))
                 .region(Regions.fromName(region))
                 .okHttpClient(buildOkHttpClient())
                 .build()

@@ -82,10 +82,12 @@ open class BaseTest {
             java.util.logging.Logger.getLogger("org.apache.http").level = java.util.logging.Level.FINEST
         }
 
-        // Look in the instrumentation registry for the creds
-        InstrumentationRegistry.getArguments()?.let { extras ->
-            username = extras.getString(USERNAME, "")
-            password = extras.getString(PASSWORD, "")
+        if (!loginCredentialsPresent()) {
+            // Look in the instrumentation registry for the creds
+            InstrumentationRegistry.getArguments()?.let { extras ->
+                username = extras.getString(USERNAME, "")
+                password = extras.getString(PASSWORD, "")
+            }
         }
 
         if (clientConfigFilesPresent()) {
