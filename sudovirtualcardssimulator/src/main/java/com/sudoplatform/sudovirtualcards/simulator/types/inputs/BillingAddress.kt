@@ -7,7 +7,7 @@
 package com.sudoplatform.sudovirtualcards.simulator.types.inputs
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * The legal residence of a cardholder for purposes of billing.

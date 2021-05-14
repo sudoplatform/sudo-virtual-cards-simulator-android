@@ -1,7 +1,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'com.amazonaws.appsync'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: "org.owasp.dependencycheck"
 
 android {

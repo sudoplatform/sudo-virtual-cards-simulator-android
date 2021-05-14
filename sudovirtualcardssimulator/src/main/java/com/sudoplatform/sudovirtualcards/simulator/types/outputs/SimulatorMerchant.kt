@@ -7,7 +7,7 @@
 package com.sudoplatform.sudovirtualcards.simulator.types.outputs
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.Date
 
 /**

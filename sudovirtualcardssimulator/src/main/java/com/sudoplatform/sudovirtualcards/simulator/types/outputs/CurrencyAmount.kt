@@ -7,7 +7,7 @@
 package com.sudoplatform.sudovirtualcards.simulator.types.outputs
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 /**
  * A currency available in the virtual card simulator. The conversion rates are expressed as [Int]
