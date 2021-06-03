@@ -169,7 +169,23 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             declineReason shouldBe null
         }
 
-        // Create a debit for the authorized amount
+        // Increase the value of the authorization
+        val incAuthInput = SimulateIncrementalAuthorizationInput(
+            authorizationId = authResponse.id,
+            amount = authInput.amount
+        )
+        val incAuthResponse = simulatorClient.simulateIncrementalAuthorization(incAuthInput)
+        logger.debug("$incAuthResponse")
+        with(incAuthResponse) {
+            isApproved shouldBe true
+            amount shouldBe incAuthInput.amount
+            currency shouldBe merchant.currency
+            createdAt.time shouldBeGreaterThan 0L
+            updatedAt.time shouldBeGreaterThan 0L
+            declineReason shouldBe null
+        }
+
+        // Create a debit for the originally authorized amount
         val debitInput = SimulateDebitInput(
             authorizationId = authResponse.id,
             amount = authInput.amount
@@ -203,22 +219,6 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
         // Try and refund more than the original debit
         shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.ExcessiveRefundException> {
             simulatorClient.simulateRefund(refundInput)
-        }
-
-        // Increase the value of the authorization
-        val incAuthInput = SimulateIncrementalAuthorizationInput(
-            authorizationId = authResponse.id,
-            amount = authInput.amount
-        )
-        val incAuthResponse = simulatorClient.simulateIncrementalAuthorization(incAuthInput)
-        logger.debug("$incAuthResponse")
-        with(incAuthResponse) {
-            isApproved shouldBe true
-            amount shouldBe incAuthInput.amount
-            currency shouldBe merchant.currency
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-            declineReason shouldBe null
         }
 
         // Reverse the authorization. Refunds don't affect things so only the incremental auth amount can be reversed

@@ -1,9 +1,9 @@
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.4.32'
     ext.plugin_version = '2.2.0'
     ext.aws_version = "2.16.12"
     ext.appsync_version = '3.1.1'
-    ext.dokka_version = '1.4.10'
+    ext.dokka_version = '1.4.30'
 
     repositories {
         maven { url = "https://plugins.gradle.org/m2" }
@@ -12,7 +12,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.1.3"
+        classpath "com.android.tools.build:gradle:4.2.1"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.owasp:dependency-check-gradle:6.1.5"
         classpath "com.cookpad.android.licensetools:license-tools-plugin:1.7.0"
@@ -20,19 +20,15 @@ buildscript {
         classpath "com.amazonaws:aws-android-sdk-appsync-gradle-plugin:$appsync_version"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.22.0"
     }
 }
 
-apply plugin: 'io.codearte.nexus-staging'
+plugins {
+    id "io.github.gradle-nexus.publish-plugin" version "1.1.0"
+}
+
 ext {
     projectGroup = 'com.sudoplatform'
-}
-nexusStaging {
-    packageGroup = projectGroup
-    stagingProfileId = '14314878e2a1b'
-    numberOfRetries = 40
-    delayBetweenRetriesInMillis = 5000
 }
 
 if(project.file("${rootProject.projectDir}/util/internal-repo.gradle").exists()) {
@@ -45,6 +41,20 @@ else {
     ext["internalSnapshotRepoName"] = ""
     ext["internalReleaseRepoUrl"] = ""
     ext["internalReleaseRepoName"] = ""
+    ext["sonatypeStagingProfileId"] = ""
+}
+
+if (project.findProperty("tag") && sonatypeStagingProfileId) {
+    nexusPublishing {
+        repositories {
+            sonatype {
+                stagingProfileId = sonatypeStagingProfileId
+
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+    }
 }
 
 allprojects {

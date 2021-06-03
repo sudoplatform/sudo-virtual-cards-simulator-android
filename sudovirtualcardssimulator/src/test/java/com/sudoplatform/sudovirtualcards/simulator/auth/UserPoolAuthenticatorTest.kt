@@ -13,8 +13,8 @@ import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobile.client.results.SignInResult
 import com.amazonaws.mobile.client.results.Tokens
 import com.amazonaws.mobile.config.AWSConfiguration
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verifyNoMoreInteractions
 import com.sudoplatform.sudologging.LogDriverInterface
 import com.sudoplatform.sudologging.Logger
 import com.sudoplatform.sudovirtualcards.simulator.BaseTests

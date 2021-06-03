@@ -6,7 +6,7 @@
 package com.sudoplatform.sudovirtualcards.simulator.samples
 
 import android.content.Context
-import com.nhaarman.mockitokotlin2.mock
+import org.mockito.kotlin.mock
 import com.sudoplatform.sudovirtualcards.simulator.BaseTests
 import com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient
 import org.junit.Test
