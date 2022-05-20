@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -14,8 +14,6 @@ import java.util.Date
  * @property id Identifier of this authorization expiry response.
  * @property createdAt When this authorization was created.
  * @property updatedAt When this authorization was most recently updated.
- *
- * @since 2020-07-07
  */
 data class SimulateAuthorizationExpiryResponse(
     val id: String,

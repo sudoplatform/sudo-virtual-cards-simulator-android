@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -10,8 +10,6 @@ import com.sudoplatform.sudoprofiles.Sudo
 
 /**
  * Data used in Android tests.
- *
- * @since 2020-06-24
  */
 object AndroidTestData {
 

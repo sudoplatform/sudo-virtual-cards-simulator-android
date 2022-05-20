@@ -47,6 +47,7 @@ captures/
 # registration keys
 **/src/test/resources/register_key*
 register_key*
+api.key
 
 projectFilesBackup/.idea/workspace.xml
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -16,8 +16,6 @@ import java.util.Date
 
 /**
  * Test the public facing data classes can be written into and read from a [Bundle]
- *
- * @since 2020-07-24
  */
 @RunWith(AndroidJUnit4::class)
 class ParcelTest {

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -11,8 +11,9 @@ import androidx.test.filters.LargeTest
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundInput
+import com.sudoplatform.sudovirtualcards.types.JsonValue
 import com.sudoplatform.sudovirtualcards.types.inputs.CreditCardFundingSourceInput
-import com.sudoplatform.sudovirtualcards.types.inputs.ProvisionCardInput
+import com.sudoplatform.sudovirtualcards.types.inputs.ProvisionVirtualCardInput
 import io.kotlintest.fail
 import io.kotlintest.shouldBe
 import kotlinx.coroutines.delay
@@ -27,8 +28,6 @@ import java.time.Instant
 
 /**
  * Test the speed of transaction handling
- *
- * @since 2020-07-24
  */
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -75,7 +74,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
 
     @Test
     fun measureTimeToListManyTransactions() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
         assumeTrue(clientConfigFilesPresent())
 
         // Log in and perform ID verification
@@ -97,21 +96,22 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             AndroidTestData.VerifiedUser.country
         )
         val fundingSource = measure(Step.CREATE_FUNDING_SOURCE) {
-            vcardsClient.createFundingSource(fundingSourceInput)
+            createFundingSource(vcClient, fundingSourceInput)
         }
 
         // Create a Sudo
         val sudo = measure(Step.CREATE_SUDO) {
             createSudo(AndroidTestData.sudo)
         }
-        sudosToDelete.add(sudo)
 
         // Create a virtual card
-        val cardInput = ProvisionCardInput(
-            sudoId = sudo.id!!,
+        val ownershipProof = getOwnershipProof(sudo)
+        vcClient.createKeysIfAbsent()
+        val cardInput = ProvisionVirtualCardInput(
+            ownershipProofs = listOf(ownershipProof),
             fundingSourceId = fundingSource.id,
             cardHolder = AndroidTestData.VirtualUser.cardHolder,
-            alias = AndroidTestData.VirtualUser.alias,
+            metadata = JsonValue.JsonString(AndroidTestData.VirtualUser.alias),
             addressLine1 = AndroidTestData.VirtualUser.addressLine1,
             city = AndroidTestData.VirtualUser.city,
             state = AndroidTestData.VirtualUser.state,
@@ -136,8 +136,8 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             amount = originalAmount,
             merchantId = merchant.id,
             securityCode = card.securityCode,
-            expirationMonth = card.expirationMonth,
-            expirationYear = card.expirationYear
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
         )
 
         val authResponse = measure(Step.AUTHORIZE) {
@@ -191,7 +191,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             }
         }
         if (failures.isNotEmpty()) {
-            fail(failures.toString())
+            fail(failures)
         }
     }
 }

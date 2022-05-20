@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -26,8 +26,6 @@ import kotlin.coroutines.suspendCoroutine
 
 /**
  * An authenticator that uses the [AWSMobileClient] to authenticate via the Cognito UserPool.
- *
- * @since 2020-05-22
  */
 internal interface UserPoolAuthenticator {
 

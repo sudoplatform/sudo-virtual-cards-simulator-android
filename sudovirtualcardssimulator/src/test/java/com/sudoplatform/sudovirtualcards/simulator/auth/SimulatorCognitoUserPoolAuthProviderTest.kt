@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -25,8 +25,6 @@ import java.lang.IllegalStateException
 
 /**
  * Test the correct operation of the [SimulatorCognitoUserPoolAuthProvider] using mocks and spies.
- *
- * @since 2020-05-28
  */
 class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
 

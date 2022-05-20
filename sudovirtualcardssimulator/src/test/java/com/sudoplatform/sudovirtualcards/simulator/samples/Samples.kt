@@ -1,8 +1,9 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
+
 package com.sudoplatform.sudovirtualcards.simulator.samples
 
 import android.content.Context
@@ -14,8 +15,6 @@ import org.junit.Test
 /**
  * These are sample snippets of code that are included in the generated documentation. They are
  * placed here in the test code so that at least we know they will compile.
- *
- * @since 2020-08-21
  */
 @Suppress("UNUSED_VARIABLE")
 class Samples : BaseTests() {

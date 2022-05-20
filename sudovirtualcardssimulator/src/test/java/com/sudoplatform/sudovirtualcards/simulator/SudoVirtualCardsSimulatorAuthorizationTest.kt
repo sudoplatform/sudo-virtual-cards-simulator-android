@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -47,8 +47,6 @@ import java.net.HttpURLConnection
 
 /**
  * Test the correct operation of the authorizations in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
- *
- * @since 2020-06-25
  */
 class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 

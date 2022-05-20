@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -18,8 +18,6 @@ import kotlinx.parcelize.Parcelize
  * @property state State or province of the cardholder's legal residence.
  * @property postalCode Postal code for the cardholder's legal residence.
  * @property country ISO-3166 Alpha-2 country code of the cardholder's legal residence.
- *
- * @since 2020-06-10
  */
 @Parcelize
 data class BillingAddress(

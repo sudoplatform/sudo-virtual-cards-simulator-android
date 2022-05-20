@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -18,7 +18,6 @@ import kotlinx.parcelize.Parcelize
  * @property currency The ISO 4217 currency code
  * @property amount The amount of a single unit of currency relative to the other currencies in the simulator
  * @sample com.sudoplatform.sudovirtualcards.simulator.samples.Samples.currencyAmount
- * @since 2020-06-05
  */
 @Parcelize
 data class CurrencyAmount(

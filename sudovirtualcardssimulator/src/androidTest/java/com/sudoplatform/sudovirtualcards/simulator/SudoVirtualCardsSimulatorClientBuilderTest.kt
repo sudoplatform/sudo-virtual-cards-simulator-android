@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -18,8 +18,6 @@ import org.junit.runner.RunWith
 
 /**
  * Test the correct operation of the [SudoVirtualCardsSimulatorClient.builder]
- *
- * @since 2020-05-26
  */
 @RunWith(AndroidJUnit4::class)
 class SudoVirtualCardsSimulatorClientBuilderTest {
@@ -41,13 +39,20 @@ class SudoVirtualCardsSimulatorClientBuilderTest {
         shouldThrow<NullPointerException> {
             SudoVirtualCardsSimulatorClient.builder()
                 .setContext(context)
-                .setUsername("foo")
                 .build()
         }
     }
 
     @Test
-    fun simulatorClientBuilderShouldNotThrowIfRequirementsProvided() {
+    fun simulatorClientBuilderShouldNotThrowIfApiKeyProvided() {
+        SudoVirtualCardsSimulatorClient.builder()
+            .setContext(context)
+            .setApiKey("foo")
+            .build()
+    }
+
+    @Test
+    fun simulatorClientBuilderShouldNotThrowIfUsernamePasswordProvided() {
         SudoVirtualCardsSimulatorClient.builder()
             .setContext(context)
             .setUsername("foo")

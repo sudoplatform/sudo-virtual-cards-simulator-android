@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -16,8 +16,6 @@ import java.util.Date
  * @property currency ISO 4217 currency code in which the merchant charges
  * @property createdAt When this reversal was created.
  * @property updatedAt When this reversal was most recently updated.
- *
- * @since 2020-07-02
  */
 data class SimulateReversalResponse(
     val id: String,

@@ -1,24 +1,23 @@
 buildscript {
-    ext.kotlin_version = '1.4.32'
+    ext.kotlin_version = '1.6.10'
     ext.plugin_version = '2.2.0'
-    ext.aws_version = "2.16.12"
-    ext.appsync_version = '3.1.1'
-    ext.dokka_version = '1.4.30'
+    ext.aws_version = '2.42.0'
+    ext.appsync_version = '3.3.0'
+    ext.dokka_version = '1.6.10'
 
     repositories {
         maven { url = "https://plugins.gradle.org/m2" }
         google()
         mavenCentral()
-        jcenter()
     }
     dependencies {
-        classpath "com.android.tools.build:gradle:4.2.1"
+        classpath "com.android.tools.build:gradle:4.2.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "org.owasp:dependency-check-gradle:6.1.5"
+        classpath "org.owasp:dependency-check-gradle:6.5.3"
         classpath "com.cookpad.android.licensetools:license-tools-plugin:1.7.0"
-        classpath "org.jmailen.gradle:kotlinter-gradle:3.3.0"
+        classpath "org.jmailen.gradle:kotlinter-gradle:3.4.5"
         classpath "com.amazonaws:aws-android-sdk-appsync-gradle-plugin:$appsync_version"
-        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.1.1"
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:3.3"
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:${dokka_version}"
     }
 }
@@ -62,25 +61,22 @@ allprojects {
         mavenLocal()
         google()
         mavenCentral()
-        if (internalRepoUsername?.trim()) {
-            maven {
-                name = internalSnapshotRepoName
-                url = internalSnapshotRepoUrl
-                credentials {
-                    username = internalRepoUsername
-                    password = internalRepoPassword
-                }
-            }
-            maven {
-                name = internalReleaseRepoName
-                url = internalReleaseRepoUrl
-                credentials {
-                    username = internalRepoUsername
-                    password = internalRepoPassword
-                }
+        maven {
+            name = "android-releases"
+            url = "https://repo.tools.anonyome.com/repository/android-releases/"
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
             }
         }
-        jcenter()
+        maven {
+            name = "android-snapshots"
+            url = "https://repo.tools.anonyome.com/repository/android-snapshots/"
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
     }
     gradle.projectsEvaluated {
         tasks.withType(Test) {

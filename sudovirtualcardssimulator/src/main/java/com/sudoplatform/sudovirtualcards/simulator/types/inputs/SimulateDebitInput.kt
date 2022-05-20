@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -11,8 +11,6 @@ package com.sudoplatform.sudovirtualcards.simulator.types.inputs
  *
  * @property authorizationId The identifier of the authorization created for this debit
  * @property amount Amount of transaction in merchant's minor currency, e.g. cents for USD
- *
- * @since 2020-07-01
  */
 data class SimulateDebitInput(
     val authorizationId: String,

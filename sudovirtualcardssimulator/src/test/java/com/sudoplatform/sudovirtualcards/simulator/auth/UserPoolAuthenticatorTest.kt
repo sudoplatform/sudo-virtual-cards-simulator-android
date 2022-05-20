@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -29,8 +29,6 @@ import java.lang.NullPointerException
 
 /**
  * Test the correct operation of the [AWSUserPoolAuthenticator] using mocks and spies.
- *
- * @since 2020-05-26
  */
 class UserPoolAuthenticatorTest : BaseTests() {
 

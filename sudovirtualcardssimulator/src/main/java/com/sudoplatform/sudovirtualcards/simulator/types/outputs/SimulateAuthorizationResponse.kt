@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -19,8 +19,6 @@ import java.util.Date
  * @property declineReason Why the transaction is being declined. Null if it is being authorized.
  * @property createdAt When this authorization was created.
  * @property updatedAt When this authorization was most recently updated.
- *
- * @since 2020-06-09
  */
 data class SimulateAuthorizationResponse(
     val id: String,

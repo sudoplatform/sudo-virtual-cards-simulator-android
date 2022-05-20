@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -14,8 +14,8 @@ import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundIn
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateReversalInput
 import com.sudoplatform.sudovirtualcards.subscribeToTransactions
 import com.sudoplatform.sudovirtualcards.types.Transaction
+import com.sudoplatform.sudovirtualcards.types.TransactionType
 import com.sudoplatform.sudovirtualcards.types.inputs.CreditCardFundingSourceInput
-import com.sudoplatform.sudovirtualcards.types.inputs.ProvisionCardInput
 import io.kotlintest.matchers.numerics.shouldBeGreaterThan
 import io.kotlintest.matchers.numerics.shouldNotBeLessThan
 import io.kotlintest.shouldBe
@@ -34,8 +34,6 @@ import java.util.UUID
 
 /**
  * Test the correct operation of the [SudoVirtualCardsSimulatorClient]
- *
- * @since 2020-05-26
  */
 @RunWith(AndroidJUnit4::class)
 class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
@@ -51,8 +49,8 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
     }
 
     @Test
-    fun getSimulatorMerchantsShouldReturnResults() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+    fun getSimulatorMerchantsShouldReturnResults() = runBlocking {
+        assumeTrue(apiKeyPresent())
 
         val merchants = simulatorClient.getSimulatorMerchants()
         merchants.isEmpty() shouldBe false
@@ -74,7 +72,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun getSimulatorConversionRatesShouldReturnResults() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val currencies = simulatorClient.getSimulatorConversionRates()
         currencies.isEmpty() shouldBe false
@@ -92,8 +90,8 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
     }
 
     @Test
-    fun completeFlowShouldSucceed() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+    fun simulateAuthorizationShouldSucceed() = runBlocking {
+        assumeTrue(apiKeyPresent())
         assumeTrue(clientConfigFilesPresent())
 
         // Log in and perform ID verification
@@ -101,61 +99,18 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
         verifyTestUserIdentity()
         refreshTokens()
 
-        // Add a subscriber for transactions
-        val transactionUpdates = mutableListOf<Transaction>()
-        val subscriptionId = UUID.randomUUID().toString()
-        vcardsClient.subscribeToTransactions(subscriptionId) { txn ->
-            transactionUpdates.add(txn)
-        }
-
-        // Create a funding source
-        val fundingSourceInput = CreditCardFundingSourceInput(
-            AndroidTestData.Visa.cardNumber,
-            expirationMonth,
-            expirationYear,
-            AndroidTestData.Visa.securityCode,
-            AndroidTestData.VerifiedUser.addressLine1,
-            AndroidTestData.VerifiedUser.addressLine2,
-            AndroidTestData.VerifiedUser.city,
-            AndroidTestData.VerifiedUser.state,
-            AndroidTestData.VerifiedUser.postalCode,
-            AndroidTestData.VerifiedUser.country
-        )
-        val fundingSource = vcardsClient.createFundingSource(fundingSourceInput)
-
-        // Create a Sudo
-        val sudo = createSudo(AndroidTestData.sudo)
-        sudosToDelete.add(sudo)
-
-        // Create a virtual card
-        val cardInput = ProvisionCardInput(
-            sudoId = sudo.id!!,
-            fundingSourceId = fundingSource.id,
-            cardHolder = AndroidTestData.VirtualUser.cardHolder,
-            alias = AndroidTestData.VirtualUser.alias,
-            addressLine1 = AndroidTestData.VirtualUser.addressLine1,
-            city = AndroidTestData.VirtualUser.city,
-            state = AndroidTestData.VirtualUser.state,
-            postalCode = AndroidTestData.VirtualUser.postalCode,
-            country = AndroidTestData.VirtualUser.country,
-            currency = "USD"
-        )
-        val card = createCard(cardInput)
-        logger.debug("$card")
+        val card = setupVirtualCardResources()
 
         // Create an authorization for a purchase (debit)
         val merchant = simulatorClient.getSimulatorMerchants().first()
-        logger.debug("$merchant")
-
         val originalAmount = 1042
-
         val authInput = SimulateAuthorizationInput(
             cardNumber = card.cardNumber,
             amount = originalAmount,
             merchantId = merchant.id,
             securityCode = card.securityCode,
-            expirationMonth = card.expirationMonth,
-            expirationYear = card.expirationYear
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
         )
 
         val authResponse = simulatorClient.simulateAuthorization(authInput)
@@ -168,6 +123,31 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             updatedAt.time shouldBeGreaterThan 0L
             declineReason shouldBe null
         }
+    }
+
+    @Test
+    fun simulateIncrementalAuthorizationShouldSucceed() = runBlocking {
+        assumeTrue(apiKeyPresent())
+        assumeTrue(clientConfigFilesPresent())
+
+        signInAndRegister()
+        verifyTestUserIdentity()
+        refreshTokens()
+
+        val card = setupVirtualCardResources()
+
+        // Create an authorization for a purchase (debit)
+        val merchant = simulatorClient.getSimulatorMerchants().first()
+        val originalAmount = 1042
+        val authInput = SimulateAuthorizationInput(
+            cardNumber = card.cardNumber,
+            amount = originalAmount,
+            merchantId = merchant.id,
+            securityCode = card.securityCode,
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
+        )
+        val authResponse = simulatorClient.simulateAuthorization(authInput)
 
         // Increase the value of the authorization
         val incAuthInput = SimulateIncrementalAuthorizationInput(
@@ -177,15 +157,99 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
         val incAuthResponse = simulatorClient.simulateIncrementalAuthorization(incAuthInput)
         logger.debug("$incAuthResponse")
         with(incAuthResponse) {
-            isApproved shouldBe true
             amount shouldBe incAuthInput.amount
             currency shouldBe merchant.currency
             createdAt.time shouldBeGreaterThan 0L
             updatedAt.time shouldBeGreaterThan 0L
-            declineReason shouldBe null
+        }
+    }
+
+    @Test
+    fun simulateDebitShouldSucceed() = runBlocking {
+        assumeTrue(apiKeyPresent())
+        assumeTrue(clientConfigFilesPresent())
+
+        signInAndRegister()
+        verifyTestUserIdentity()
+        refreshTokens()
+
+        val card = setupVirtualCardResources()
+
+        // Create an authorization for a purchase (debit)
+        val merchant = simulatorClient.getSimulatorMerchants().first()
+        val originalAmount = 1042
+        val authInput = SimulateAuthorizationInput(
+            cardNumber = card.cardNumber,
+            amount = originalAmount,
+            merchantId = merchant.id,
+            securityCode = card.securityCode,
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
+        )
+        val authResponse = simulatorClient.simulateAuthorization(authInput)
+
+        // Create a debit for the authorized amount
+        val debitInput = SimulateDebitInput(
+            authorizationId = authResponse.id,
+            amount = authInput.amount
+        )
+        val debitResponse = simulatorClient.simulateDebit(debitInput)
+        logger.debug("$debitResponse")
+        with(debitResponse) {
+            id.isBlank() shouldBe false
+            amount shouldBe authInput.amount
+            currency shouldBe merchant.currency
+            createdAt.time shouldBeGreaterThan 0L
+            updatedAt.time shouldBeGreaterThan 0L
+        }
+    }
+
+    @Test
+    fun simulateRefundShouldSucceed() = runBlocking {
+        assumeTrue(apiKeyPresent())
+        assumeTrue(clientConfigFilesPresent())
+
+        signInAndRegister()
+        verifyTestUserIdentity()
+        refreshTokens()
+
+        // Add a subscriber for transactions
+        val transactionUpdates = mutableListOf<Transaction>()
+        val subscriptionId = UUID.randomUUID().toString()
+        vcClient.subscribeToTransactions(subscriptionId) { txn ->
+            transactionUpdates.add(txn)
         }
 
-        // Create a debit for the originally authorized amount
+        val fundingSourceInput = CreditCardFundingSourceInput(
+            AndroidTestData.Visa.cardNumber,
+            expirationMonth,
+            expirationYear,
+            AndroidTestData.Visa.securityCode,
+            AndroidTestData.VerifiedUser.addressLine1,
+            AndroidTestData.VerifiedUser.addressLine2,
+            AndroidTestData.VerifiedUser.city,
+            AndroidTestData.VerifiedUser.state,
+            AndroidTestData.VerifiedUser.postalCode,
+            AndroidTestData.VerifiedUser.country
+        )
+        val fundingSource = createFundingSource(vcClient, fundingSourceInput)
+
+        val card = setupVirtualCardResources(fundingSource)
+
+        // Create an authorization for a purchase (debit)
+        val merchant = simulatorClient.getSimulatorMerchants().first()
+        val originalAmount = 1042
+        val authInput = SimulateAuthorizationInput(
+            cardNumber = card.cardNumber,
+            amount = originalAmount,
+            merchantId = merchant.id,
+            securityCode = card.securityCode,
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
+        )
+        val authResponse = simulatorClient.simulateAuthorization(authInput)
+
+        // Create a debit for the authorized amount
         val debitInput = SimulateDebitInput(
             authorizationId = authResponse.id,
             amount = authInput.amount
@@ -221,50 +285,16 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             simulatorClient.simulateRefund(refundInput)
         }
 
-        // Reverse the authorization. Refunds don't affect things so only the incremental auth amount can be reversed
-        val reversalInput = SimulateReversalInput(
-            authorizationId = authResponse.id,
-            amount = incAuthInput.amount
-        )
-        val reversalResponse = simulatorClient.simulateReversal(reversalInput)
-        logger.debug("$reversalResponse")
-        with(reversalResponse) {
-            id.isBlank() shouldBe false
-            amount shouldBe reversalInput.amount
-            currency shouldBe merchant.currency
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-        }
-
         // List the transactions and wait until there are no PENDING transactions
         val transactions = mutableListOf<Transaction>()
-        withTimeout(20_000L) {
-            while (transactions.isEmpty() || transactions.any { it.type == Transaction.Type.PENDING }) {
+        withTimeout(40_000L) {
+            while (transactions.isEmpty() || transactions.any { it.type == TransactionType.PENDING }) {
                 delay(2_000L)
                 transactions.clear()
                 transactions.addAll(listTransactions(card))
             }
         }
         transactions.size shouldBe 3
-
-        // Check the transaction that corresponds to the debit has the right amounts
-        fun checkDebitHasCorrectAmounts(debitTransaction: Transaction) {
-            with(debitTransaction) {
-                billedAmount.currency shouldBe merchant.currency
-                billedAmount.amount shouldBe originalAmount
-                transactedAmount.currency shouldBe merchant.currency
-                transactedAmount.amount shouldBe originalAmount
-                details.size shouldBe 1
-                with(details[0]) {
-                    virtualCardAmount.currency shouldBe merchant.currency
-                    virtualCardAmount.amount shouldBe originalAmount
-                    fundingSourceAmount.currency shouldBe fundingSource.currency
-                    fundingSourceAmount.amount shouldBe (virtualCardAmount.amount + markupAmount.amount)
-                }
-            }
-        }
-        checkDebitHasCorrectAmounts(transactions.first { it.type == Transaction.Type.COMPLETE })
-        checkDebitHasCorrectAmounts(transactionUpdates.first { it.type == Transaction.Type.COMPLETE })
 
         // Check the transactions that correspond to the refunds have the right amounts
         fun checkRefundsHaveCorrectAmounts(refunds: List<Transaction>) {
@@ -286,13 +316,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
                 }
             }
         }
-        checkRefundsHaveCorrectAmounts(transactions.filter { it.type == Transaction.Type.REFUND })
-        checkRefundsHaveCorrectAmounts(transactionUpdates.filter { it.type == Transaction.Type.REFUND })
-
-        // Check the operation of the getTransaction API
-        transactions.forEach { expected ->
-            expected shouldBe vcardsClient.getTransaction(expected.id)
-        }
+        checkRefundsHaveCorrectAmounts(transactionUpdates.filter { it.type == TransactionType.REFUND })
 
         // Check that an update was received for each transaction
         transactions.forEach { expected ->
@@ -300,12 +324,12 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             updates.isEmpty() shouldBe false
         }
 
-        vcardsClient.unsubscribeFromTransactions(subscriptionId)
+        vcClient.unsubscribeFromTransactions(subscriptionId)
     }
 
     @Test
     fun simulateAuthorizationShouldFailWithBogusCard() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val merchant = simulatorClient.getSimulatorMerchants().first()
 
@@ -324,7 +348,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun simulateIncrementalAuthorizationShouldFailWithBogusAuthorization() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val input = SimulateIncrementalAuthorizationInput(
             authorizationId = "6666666666666666",
@@ -338,7 +362,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun simulateDebitShouldFailWithBogusAuthorization() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val input = SimulateDebitInput(
             authorizationId = "6666666666666666",
@@ -352,7 +376,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun simulateRefundShouldFailWithBogusDebit() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val input = SimulateRefundInput(
             debitId = "6666666666666666",
@@ -366,7 +390,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun simulateReversalShouldFailWithBogusAuthorization() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         val input = SimulateReversalInput(
             authorizationId = "6666666666666666",
@@ -380,7 +404,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun authorizationExpiryExpiredAuthorizationShouldFail() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
         assumeTrue(clientConfigFilesPresent())
 
         // Log in and perform ID verification
@@ -388,39 +412,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
         verifyTestUserIdentity()
         refreshTokens()
 
-        // Create a funding source
-        val fundingSourceInput = CreditCardFundingSourceInput(
-            AndroidTestData.Visa.cardNumber,
-            expirationMonth,
-            expirationYear,
-            AndroidTestData.Visa.securityCode,
-            AndroidTestData.VerifiedUser.addressLine1,
-            AndroidTestData.VerifiedUser.addressLine2,
-            AndroidTestData.VerifiedUser.city,
-            AndroidTestData.VerifiedUser.state,
-            AndroidTestData.VerifiedUser.postalCode,
-            AndroidTestData.VerifiedUser.country
-        )
-        val fundingSource = vcardsClient.createFundingSource(fundingSourceInput)
-
-        // Create a Sudo
-        val sudo = createSudo(AndroidTestData.sudo)
-        sudosToDelete.add(sudo)
-
-        // Create a virtual card
-        val cardInput = ProvisionCardInput(
-            sudoId = sudo.id!!,
-            fundingSourceId = fundingSource.id,
-            cardHolder = AndroidTestData.VirtualUser.cardHolder,
-            alias = AndroidTestData.VirtualUser.alias,
-            addressLine1 = AndroidTestData.VirtualUser.addressLine1,
-            city = AndroidTestData.VirtualUser.city,
-            state = AndroidTestData.VirtualUser.state,
-            postalCode = AndroidTestData.VirtualUser.postalCode,
-            country = AndroidTestData.VirtualUser.country,
-            currency = "USD"
-        )
-        val card = createCard(cardInput)
+        val card = setupVirtualCardResources()
         logger.debug("$card")
 
         // Create an authorization for a purchase (debit)
@@ -435,8 +427,8 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             amount = originalAmount,
             merchantId = merchant.id,
             securityCode = card.securityCode,
-            expirationMonth = card.expirationMonth,
-            expirationYear = card.expirationYear
+            expirationMonth = card.expiry.mm.toInt(),
+            expirationYear = card.expiry.yyyy.toInt()
         )
 
         val authResponse = simulatorClient.simulateAuthorization(authInput)
@@ -468,7 +460,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
     @Test
     fun simulateAuthorizationExpiryShouldFailWithBogusAuthorization() = runBlocking<Unit> {
-        assumeTrue(loginCredentialsPresent())
+        assumeTrue(apiKeyPresent())
 
         shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthorizationNotFoundException> {
             simulatorClient.simulateAuthorizationExpiry("6666666666666666")

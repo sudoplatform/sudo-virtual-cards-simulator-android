@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -15,8 +15,6 @@ import kotlinx.coroutines.runBlocking
  * Provides the authentication for all GraphQL API calls to the Simulator Service.
  *
  * This is used when the client is configured to be authenticated via Cognito User Pools.
- *
- * @since 2020-05-22
  */
 internal class SimulatorCognitoUserPoolAuthProvider(
     context: Context,

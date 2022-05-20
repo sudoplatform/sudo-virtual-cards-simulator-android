@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -49,6 +49,7 @@ interface SudoVirtualCardsSimulatorClient {
         private var context: Context? = null
         private var username: String? = null
         private var password: String? = null
+        private var apiKey: String? = null
         private var appSyncClient: AWSAppSyncClient? = null
         private var logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO))
 
@@ -76,6 +77,14 @@ interface SudoVirtualCardsSimulatorClient {
         }
 
         /**
+         * Provide the API key to authenticate with the simulator.
+         * This is required input if you are not supplying your own [AWSAppSyncClient].
+         */
+        fun setApiKey(apiKey: String) = also {
+            it.apiKey = apiKey
+        }
+
+        /**
          * Provide an [AWSAppSyncClient] for the [SudoVirtualCardsSimulatorClient] to use
          * (optional input). If you do not supply this value an [AWSAppSyncClient] will
          * be constructed and used. If you provide the [AWSAppSyncClient] via this method
@@ -95,14 +104,14 @@ interface SudoVirtualCardsSimulatorClient {
 
         /**
          * Construct the [SudoVirtualCardsSimulatorClient]. Will throw a [NullPointerException] if
-         * the [context], [username] or [password] are needed and have not been provided. Will also throw
-         * [NullPointerException] if the configuration file does not supply the adminApiService
+         * the [context], [username] and [password] or [apiKey] are needed and have not been provided.
+         * Will also throw [NullPointerException] if the configuration file does not supply the adminApiService
          * section with the elements apiUrl, poolId, region and clientId.
          */
         fun build(): SudoVirtualCardsSimulatorClient {
             if (appSyncClient == null) {
                 // User has not supplied their own AWSAppSyncClient so create our own
-                appSyncClient = AWSAppSyncClientFactory.getAppSyncClient(context, username, password)
+                appSyncClient = AWSAppSyncClientFactory.getAppSyncClient(context, username, password, apiKey)
             }
             return DefaultSudoVirtualCardsSimulatorClient(appSyncClient!!, logger)
         }

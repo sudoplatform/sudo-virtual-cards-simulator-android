@@ -1,5 +1,5 @@
 /*
- * Copyright © 2020 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -28,8 +28,6 @@ import java.util.Date
  * declined before it reaches the authorization level at the Virtual Card Service
  * @property createdAt When the merchant was created
  * @property updatedAt When the merchant was last updated
- *
- * @since 2020-05-22
  */
 @Parcelize
 data class SimulatorMerchant(
