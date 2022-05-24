@@ -81,7 +81,7 @@ dependencies {
     implementation "com.sudoplatform:sudologging:1.2.0"
     implementation "com.sudoplatform:sudoconfigmanager:2.0.0"
     implementation "com.sudoplatform:sudouser:11.1.1"
-    implementation "com.sudoplatform:sudovirtualcards:4.0.0-1652917920-SNAPSHOT"
+    implementation "com.sudoplatform:sudovirtualcards:4.0.0"
 
     implementation "com.appmattus.certificatetransparency:certificatetransparency-android:1.1.0"
 
