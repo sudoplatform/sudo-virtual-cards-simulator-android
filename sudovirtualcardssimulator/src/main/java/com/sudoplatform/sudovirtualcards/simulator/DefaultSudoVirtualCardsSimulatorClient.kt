@@ -78,7 +78,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "3.0.1"
+    private val version: String = "3.0.2"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {

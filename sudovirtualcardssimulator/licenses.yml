@@ -859,3 +859,75 @@
   license: The Apache Software License, Version 2.0
   licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
   url: https://developer.android.com/jetpack/androidx/releases/startup#1.0.0
+- artifact: androidx.security:security-crypto:+
+  name: AndroidX Security
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/security#1.1.0-alpha03
+- artifact: androidx.test.espresso:espresso-idling-resource:+
+  name: AndroidX Test Library
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/testing
+- artifact: com.google.crypto.tink:tink-android:+
+  name: Tink Cryptography API for Android
+  copyrightHolder: Google, Inc.
+  license: Apache License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: http://github.com/google/tink
+- artifact: com.stripe:link:+
+  name: link
+  copyrightHolder: Stripe
+  license: The MIT License
+  licenseUrl: https://raw.githubusercontent.com/stripe/stripe-android/master/LICENSE
+  url: https://github.com/stripe/stripe-android
+- artifact: androidx.navigation:navigation-runtime:+
+  name: Android Navigation Runtime
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/navigation#2.4.2
+- artifact: androidx.navigation:navigation-runtime-ktx:+
+  name: Android Navigation Runtime Kotlin Extensions
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/navigation#2.4.2
+- artifact: androidx.compose.ui:ui-tooling-preview:+
+  name: Compose Tooling API
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/compose-ui#1.1.1
+- artifact: androidx.navigation:navigation-common:+
+  name: Android Navigation Common
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/navigation#2.4.2
+- artifact: androidx.lifecycle:lifecycle-viewmodel-compose:+
+  name: Lifecycle ViewModel Compose
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/lifecycle#2.4.0
+- artifact: androidx.navigation:navigation-compose:+
+  name: Compose Navigation
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/navigation#2.4.2
+- artifact: com.stripe:payments-model:+
+  name: payments-model
+  copyrightHolder: Stripe
+  license: The MIT License
+  licenseUrl: https://raw.githubusercontent.com/stripe/stripe-android/master/LICENSE
+  url: https://github.com/stripe/stripe-android
+- artifact: androidx.navigation:navigation-common-ktx:+
+  name: Android Navigation Common Kotlin Extensions
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/navigation#2.4.2
