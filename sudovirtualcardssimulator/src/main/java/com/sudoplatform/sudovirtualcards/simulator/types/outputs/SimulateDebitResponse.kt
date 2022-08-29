@@ -11,11 +11,11 @@ import java.util.Date
 /**
  * A debit created in the simulator.
  *
- * @property id Identifier of the debit response.
- * @property amount The amount of the debit in the merchant's minor currency e.g. cents for USD.
- * @property currency ISO 4217 currency code in which the merchant charges
- * @property createdAt When this debit was created.
- * @property updatedAt When this debit was most recently updated.
+ * @property id [String] Identifier of the debit response.
+ * @property amount [Int] The amount of the debit in the merchant's minor currency e.g. cents for USD.
+ * @property currency [String] ISO 4217 currency code in which the merchant charges
+ * @property createdAt [Date] When this debit was created.
+ * @property updatedAt [Date] When this debit was most recently updated.
  */
 data class SimulateDebitResponse(
     val id: String,

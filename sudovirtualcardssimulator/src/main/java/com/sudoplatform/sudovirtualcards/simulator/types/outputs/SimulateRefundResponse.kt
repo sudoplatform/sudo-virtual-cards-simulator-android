@@ -11,11 +11,11 @@ import java.util.Date
 /**
  * A refund created in the simulator.
  *
- * @property id Identifier of the refund.
- * @property amount The amount of the refund in the merchant's minor currency e.g. cents for USD.
- * @property currency ISO 4217 currency code in which the merchant charges
- * @property createdAt When this refund was created.
- * @property updatedAt When this refund was most recently updated.
+ * @property id [String] Identifier of the refund.
+ * @property amount [Int] The amount of the refund in the merchant's minor currency e.g. cents for USD.
+ * @property currency [String] ISO 4217 currency code in which the merchant charges
+ * @property createdAt [Date] When this refund was created.
+ * @property updatedAt [Date] When this refund was most recently updated.
  */
 data class SimulateRefundResponse(
     val id: String,

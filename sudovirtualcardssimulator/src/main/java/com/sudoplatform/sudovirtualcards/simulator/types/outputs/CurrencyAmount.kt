@@ -15,8 +15,8 @@ import kotlinx.parcelize.Parcelize
  * the conversion rates of the two currencies, convert to [Double], divide them then use that relative
  * value to perform the currency conversion.
  *
- * @property currency The ISO 4217 currency code
- * @property amount The amount of a single unit of currency relative to the other currencies in the simulator
+ * @property currency [String] The ISO 4217 currency code
+ * @property amount [Int] The amount of a single unit of currency relative to the other currencies in the simulator
  * @sample com.sudoplatform.sudovirtualcards.simulator.samples.Samples.currencyAmount
  */
 @Parcelize

@@ -9,8 +9,8 @@ package com.sudoplatform.sudovirtualcards.simulator.types.inputs
 /**
  * A request to create a debit in the simulator.
  *
- * @property authorizationId The identifier of the authorization created for this debit
- * @property amount Amount of transaction in merchant's minor currency, e.g. cents for USD
+ * @property authorizationId [String] The identifier of the authorization created for this debit
+ * @property amount [Int] Amount of transaction in merchant's minor currency, e.g. cents for USD
  */
 data class SimulateDebitInput(
     val authorizationId: String,

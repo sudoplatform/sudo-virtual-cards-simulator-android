@@ -11,11 +11,11 @@ import java.util.Date
 /**
  * A reversal of a debit created in the simulator.
  *
- * @property id Identifier of the reversal.
- * @property amount The amount of the reversal in the merchant's minor currency e.g. cents for USD.
- * @property currency ISO 4217 currency code in which the merchant charges
- * @property createdAt When this reversal was created.
- * @property updatedAt When this reversal was most recently updated.
+ * @property id [String] Identifier of the reversal.
+ * @property amount [Int] The amount of the reversal in the merchant's minor currency e.g. cents for USD.
+ * @property currency [String] ISO 4217 currency code in which the merchant charges
+ * @property createdAt [Date] When this reversal was created.
+ * @property updatedAt [Date] When this reversal was most recently updated.
  */
 data class SimulateReversalResponse(
     val id: String,

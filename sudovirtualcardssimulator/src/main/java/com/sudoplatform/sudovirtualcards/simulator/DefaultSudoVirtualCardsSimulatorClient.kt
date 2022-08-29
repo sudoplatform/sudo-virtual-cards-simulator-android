@@ -62,8 +62,8 @@ private const val ERROR_ALREADY_EXPIRED = "AlreadyExpiredError"
 /**
  * Default implementation of the [SudoVirtualCardsSimulatorClient] interface.
  *
- * @property appSyncClient GraphQL client used to make requests to AWS and call sudo virtual cards service API.
- * @property logger Errors and warnings will be logged here
+ * @property appSyncClient [AWSAppSyncClient] GraphQL client used to make requests to AWS and call sudo virtual cards service API.
+ * @property logger [Logger] Errors and warnings will be logged here
  */
 internal class DefaultSudoVirtualCardsSimulatorClient(
     private val appSyncClient: AWSAppSyncClient,
@@ -78,7 +78,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "3.0.2"
+    private val version: String = "3.1.0"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {

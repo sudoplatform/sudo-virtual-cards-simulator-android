@@ -11,9 +11,9 @@ import java.util.Date
 /**
  * An authorization expiry was requested in the simulator.
  *
- * @property id Identifier of this authorization expiry response.
- * @property createdAt When this authorization was created.
- * @property updatedAt When this authorization was most recently updated.
+ * @property id [String] Identifier of this authorization expiry response.
+ * @property createdAt [Date] When this authorization was created.
+ * @property updatedAt [Date] When this authorization was most recently updated.
  */
 data class SimulateAuthorizationExpiryResponse(
     val id: String,
