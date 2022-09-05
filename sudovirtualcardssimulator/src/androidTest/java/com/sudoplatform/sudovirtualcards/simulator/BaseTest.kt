@@ -82,7 +82,6 @@ open class BaseTest {
     protected val vcClient by lazy {
         SudoVirtualCardsClient.builder()
             .setContext(context)
-            .setSudoProfilesClient(sudoClient)
             .setSudoUserClient(userClient)
             .setLogger(logger)
             .build()
