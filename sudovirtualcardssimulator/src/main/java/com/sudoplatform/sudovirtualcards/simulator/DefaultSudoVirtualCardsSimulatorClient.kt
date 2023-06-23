@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2023 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -78,7 +78,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "4.0.0"
+    private val version: String = "7.0.0"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {
@@ -471,7 +471,6 @@ private fun interpretReversalFailure(e: ApolloException): SudoVirtualCardsSimula
 
 /** Return the message and cause if this is an authentication error, null otherwise */
 private fun ApolloException.isAuthenticationFailure(): Pair<String, Throwable>? {
-
     var cause = this.cause
     while (cause != null) {
         val msg = cause.message

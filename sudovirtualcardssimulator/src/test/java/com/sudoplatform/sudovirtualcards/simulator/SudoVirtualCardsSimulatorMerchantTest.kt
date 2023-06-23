@@ -80,7 +80,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredMerchants = async(Dispatchers.IO) {
@@ -140,7 +139,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredMerchants = async(Dispatchers.IO) {
@@ -161,7 +159,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredMerchants = async(Dispatchers.IO) {
@@ -182,7 +179,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredMerchants = async(Dispatchers.IO) {
@@ -215,7 +211,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -237,7 +232,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -259,7 +253,6 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
 
     @Test
     fun `getSimulatorMerchants() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredMerchants = async(Dispatchers.IO) {

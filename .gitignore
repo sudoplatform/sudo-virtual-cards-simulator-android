@@ -44,19 +44,11 @@ config.properties
 captures/
 .env
 
-# registration keys
-**/src/test/resources/register_key*
-register_key*
-api.key
-
 projectFilesBackup/.idea/workspace.xml
 
 kits.gradle
 
-**compatibility_archive.txt
-/identity-system-test-config
 package-lock.json
 node_modules
-sudoplatformconfig.json
-anonyome_ssm_parameter_register_key.json
-anonyome_ssm_parameter_register_public_key.json
+
+sudovirtualcardssimulator/src/main/assets

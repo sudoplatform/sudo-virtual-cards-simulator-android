@@ -83,7 +83,8 @@ internal class AWSUserPoolAuthenticator(
         val configuration = AWSConfiguration(JSONObject(configurationJson))
 
         mobileClient.initialize(
-            context, configuration,
+            context,
+            configuration,
             object : Callback<UserStateDetails> {
 
                 override fun onResult(userState: UserStateDetails?) {
@@ -112,7 +113,8 @@ internal class AWSUserPoolAuthenticator(
     override suspend fun signIn(username: String, password: String) = suspendCoroutine<Unit> { cont ->
 
         mobileClient.signIn(
-            username, password,
+            username,
+            password,
             object : Callback<SignInResult> {
 
                 override fun onResult(result: SignInResult?) {

@@ -87,7 +87,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -135,7 +134,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -156,7 +154,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -177,7 +174,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -210,7 +206,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -232,7 +227,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -254,7 +248,6 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateIncrementalAuthorization() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {

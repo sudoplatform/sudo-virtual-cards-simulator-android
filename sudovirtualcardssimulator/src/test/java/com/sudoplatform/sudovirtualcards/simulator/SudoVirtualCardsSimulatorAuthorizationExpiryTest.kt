@@ -83,7 +83,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -123,7 +122,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -144,7 +142,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -165,7 +162,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -198,7 +194,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -220,7 +215,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -242,7 +236,6 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
 
     @Test
     fun `simulateAuthorizationExpiry() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {

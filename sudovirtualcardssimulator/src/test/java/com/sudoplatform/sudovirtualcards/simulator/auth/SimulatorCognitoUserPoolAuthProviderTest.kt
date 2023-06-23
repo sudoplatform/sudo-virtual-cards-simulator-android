@@ -65,7 +65,6 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
 
     @Test
     fun `should succeed if able to authenticate`() = runBlocking<Unit> {
-
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,
@@ -84,7 +83,6 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
 
     @Test
     fun `should throw if unable to authenticate`() = runBlocking<Unit> {
-
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,
@@ -103,7 +101,6 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
 
     @Test
     fun `should throw if tokens not returned`() = runBlocking<Unit> {
-
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,

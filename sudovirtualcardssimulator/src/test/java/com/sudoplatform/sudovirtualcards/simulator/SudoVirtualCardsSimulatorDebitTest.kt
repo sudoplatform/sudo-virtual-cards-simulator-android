@@ -87,7 +87,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -131,7 +130,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -152,7 +150,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -173,7 +170,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -206,7 +202,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -228,7 +223,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -250,7 +244,6 @@ class SudoVirtualCardsSimulatorDebitTest : BaseTests() {
 
     @Test
     fun `simulateDebit() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {

@@ -22,7 +22,6 @@ class ParcelTest {
 
     @Test
     fun parcellableClassesCanBeParcelledAndUnparcelled() {
-
         val currency = CurrencyAmount("AUD", 4200)
         val merchant = SimulatorMerchant(
             id = "id",

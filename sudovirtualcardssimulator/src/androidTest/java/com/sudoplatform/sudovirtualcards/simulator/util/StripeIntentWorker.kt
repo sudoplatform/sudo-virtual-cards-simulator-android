@@ -16,6 +16,7 @@ import com.stripe.android.model.PaymentMethod
 import com.stripe.android.model.PaymentMethodCreateParams
 import com.sudoplatform.sudovirtualcards.SudoVirtualCardsClient
 import com.sudoplatform.sudovirtualcards.types.ProviderCompletionData
+import com.sudoplatform.sudovirtualcards.types.StripeCardProviderCompletionData
 import com.sudoplatform.sudovirtualcards.types.inputs.CreditCardFundingSourceInput
 import com.sudoplatform.sudovirtualcards.util.LocaleUtil
 
@@ -36,7 +37,7 @@ internal class StripeIntentWorker(
      */
     suspend fun confirmSetupIntent(
         input: CreditCardFundingSourceInput,
-        clientSecret: String,
+        clientSecret: String
     ): ProviderCompletionData {
         // Build card details
         val cardDetails = PaymentMethodCreateParams.Card.Builder()
@@ -69,7 +70,7 @@ internal class StripeIntentWorker(
             }
         // Return completion data
         setupIntent.paymentMethodId?.let {
-            return ProviderCompletionData(paymentMethod = it)
+            return StripeCardProviderCompletionData(paymentMethod = it)
         }
         throw SudoVirtualCardsClient.FundingSourceException.FailedException()
     }

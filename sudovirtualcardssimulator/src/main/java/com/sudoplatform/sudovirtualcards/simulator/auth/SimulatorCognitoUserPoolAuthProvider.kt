@@ -62,7 +62,6 @@ internal class SimulatorCognitoUserPoolAuthProvider(
 
     override fun getLatestAuthToken(): String {
         return runBlocking<String> {
-
             authenticator.initialize()
 
             if (authenticator.state != UserPoolAuthenticator.State.SIGNED_IN) {

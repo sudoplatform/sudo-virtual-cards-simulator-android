@@ -8,17 +8,23 @@ apply plugin: 'jacoco'
 
 // jacoco parser error in versions below 0.8.7:
 jacoco {
-    toolVersion = "0.8.7"
+    toolVersion = "0.8.10"
+}
+
+node {
+    version = "16.18.0"
 }
 
 android {
     compileSdkVersion 31
 
+    namespace "com.sudoplatform.sudovirtualcards.simulator"
+
     defaultConfig {
         minSdkVersion 24
         targetSdkVersion 31
         versionCode = 1
-        versionName = "4.0.0"
+        versionName = "7.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "com.sudoplatform.sudovirtualcards.simulator.test"
         consumerProguardFiles 'consumer-rules.pro'
@@ -51,20 +57,32 @@ android {
 
     testOptions {
         unitTests.includeAndroidResources = true
+        unitTests.returnDefaultValues = true
         unitTests.all {
             // Default heap size (512) was starting to cause out of memory issues
             maxHeapSize = '2048m'
             outputs.upToDateWhen {false}
             jacoco {
                 includeNoLocationClasses = true
+                excludes = [
+                        'jdk.internal.*'
+                ]
             }
+        }
+    }
+
+
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 }
 
 dependencies {
     // Kotlin
-    def coroutine_version = '1.6.4'
+    def coroutine_version = '1.7.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
@@ -77,44 +95,53 @@ dependencies {
     implementation "com.amazonaws:aws-android-sdk-core:$aws_version!!"
     implementation "com.amazonaws:aws-android-sdk-appsync:$appsync_version!!"
     constraints {
-        implementation("com.squareup.okhttp3:okhttp:4.9.3") {
-            because("Versions < 4.9.3 has CVE-2021-0341")
-        }
         implementation("com.google.android.gms:play-services-basement:18.1.0") {
             because("Versions < 18.1.0 have CVE-2022-1799")
         }
     }
 
     // Sudo Platform
-    implementation "com.sudoplatform:sudologging:2.0.1"
-    implementation "com.sudoplatform:sudoconfigmanager:3.0.1"
-    implementation "com.sudoplatform:sudouser:12.0.1"
-    implementation "com.sudoplatform:sudovirtualcards:6.0.0"
+    implementation "com.sudoplatform:sudologging:2.1.0"
+    implementation "com.sudoplatform:sudoconfigmanager:5.0.0"
+    implementation "com.sudoplatform:sudouser:16.0.0"
+    implementation "com.sudoplatform:sudovirtualcards:11.0.0"
 
-    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:1.1.1"
+    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.4.7"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
     // Testing
     def kotlintest_version = "3.4.2"
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
-    testImplementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.0.0"
-    testImplementation "com.jakewharton.timber:timber:4.7.1"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+    testImplementation "com.jakewharton.timber:timber:5.0.1"
 
     // Stripe
     androidTestImplementation "com.stripe:stripe-android:20.5.0"
 
-    androidTestImplementation "androidx.test.ext:junit:1.1.3"
-    androidTestImplementation "androidx.test:runner:1.4.0"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+    // Checkout.com
+    androidTestImplementation 'com.github.checkout:frames-android:3.1.2'
+
+    // Checkout dependency only works with 1.3.0 or 1.4.0 so we peg
+    // it to 1.4.0 so other test related dependencies do not automatically
+    // upgrade it to a later version that breaks the build.
+    androidTestImplementation("com.google.android.material:material") {
+        version {
+            strictly("1.4.0")
+        }
+    }
+
+    androidTestImplementation "androidx.test.ext:junit:1.1.5"
+    androidTestImplementation "androidx.test:runner:1.5.2"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
     androidTestImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
     androidTestImplementation "com.jakewharton.timber:timber:4.7.1"
 
-    androidTestImplementation "com.sudoplatform:sudoprofiles:9.0.0"
-    androidTestImplementation "com.sudoplatform:sudokeymanager:5.0.0"
-    androidTestImplementation 'com.sudoplatform:sudoentitlements:4.0.0'
-    androidTestImplementation "com.sudoplatform:sudoidentityverification:8.0.0"
+    androidTestImplementation "com.sudoplatform:sudoprofiles:12.0.0"
+    androidTestImplementation "com.sudoplatform:sudokeymanager:5.2.1"
+    androidTestImplementation 'com.sudoplatform:sudoentitlements:7.0.0'
+    androidTestImplementation 'com.sudoplatform:sudoidentityverification:11.0.0'
 }
 
 // Returns a list of `configurations` which should not be scanned for vulnerabilities
@@ -143,11 +170,17 @@ afterEvaluate {
         suppressionFile file("../dependency-suppression.xml").toString()
         failBuildOnCVSS 0
         skipConfigurations = getConfigurationsToSkip(configurations)
+
+        cve {
+            urlModified = "https://anonyome-nist-cve-mirror.s3.amazonaws.com/nvdcve-1.1-modified.json.gz"
+            urlBase = "https://anonyome-nist-cve-mirror.s3.amazonaws.com/nvdcve-1.1-%d.json.gz"
+            startYear = 2002
+            waitTime = 0
+        }
     }
 }
 
-// https://github.com/cookpad/license-tools-plugin
-apply plugin: "com.cookpad.android.licensetools"
+apply plugin: "com.cookpad.android.plugin.license-tools"
 
 licenseTools {
     licensesYaml = file("licenses.yml")
@@ -210,14 +243,10 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
                        '**/R$*.class',
                        '**/BuildConfig.*',
                        '**/Manifest*.*']
-        )
+    )
     )
     sourceDirectories.setFrom(files("${buildDir.parent}/sudovirtualcardssimulator/src/main/java"))
     executionData.setFrom(fileTree(["dir":"$buildDir", "includes":["**/*.exec", "**/*.ec"]]))
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
 }
 
 // Dokka documentation generation

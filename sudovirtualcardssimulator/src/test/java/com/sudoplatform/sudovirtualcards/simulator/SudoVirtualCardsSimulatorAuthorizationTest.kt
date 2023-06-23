@@ -102,7 +102,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -156,7 +155,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -177,7 +175,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -198,7 +195,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {
@@ -231,7 +227,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -253,7 +248,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -275,7 +269,6 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
 
     @Test
     fun `simulateAuthorization() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredAuthorization = async(Dispatchers.IO) {

@@ -33,7 +33,6 @@ internal class AWSAppSyncClientFactory {
          */
         @Throws(NullPointerException::class)
         fun getAppSyncClient(context: Context?, username: String?, password: String?, apiKey: String?): AWSAppSyncClient {
-
             Objects.requireNonNull(context, "Context must be provided.")
 
             if (username == null && password == null) {

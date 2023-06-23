@@ -19,5 +19,6 @@ import org.junit.Rule
  * And provides convenient access to the [com.sudoplatform.sudovirtualcards.simulator.rules.PropertyResetRule.before].
  */
 abstract class BaseTests : PropertyResetter by ActualPropertyResetter() {
-    @Rule @JvmField val timberLogRule = TimberLogRule()
+    @Rule @JvmField
+    val timberLogRule = TimberLogRule()
 }

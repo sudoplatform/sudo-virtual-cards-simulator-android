@@ -24,15 +24,17 @@ import com.sudoplatform.sudouser.TESTAuthenticationProvider
 import com.sudoplatform.sudovirtualcards.SudoVirtualCardsClient
 import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.util.StripeIntentWorker
+import com.sudoplatform.sudovirtualcards.types.ClientApplicationData
 import com.sudoplatform.sudovirtualcards.types.FundingSource
 import com.sudoplatform.sudovirtualcards.types.JsonValue
 import com.sudoplatform.sudovirtualcards.types.ListAPIResult
 import com.sudoplatform.sudovirtualcards.types.ProvisionalVirtualCard
+import com.sudoplatform.sudovirtualcards.types.StripeCardProvisioningData
 import com.sudoplatform.sudovirtualcards.types.Transaction
 import com.sudoplatform.sudovirtualcards.types.VirtualCard
 import com.sudoplatform.sudovirtualcards.types.inputs.CompleteFundingSourceInput
 import com.sudoplatform.sudovirtualcards.types.inputs.CreditCardFundingSourceInput
-import com.sudoplatform.sudovirtualcards.types.inputs.FundingSourceType
+import com.sudoplatform.sudovirtualcards.types.FundingSourceType
 import com.sudoplatform.sudovirtualcards.types.inputs.ProvisionVirtualCardInput
 import com.sudoplatform.sudovirtualcards.types.inputs.SetupFundingSourceInput
 import com.sudoplatform.sudovirtualcards.util.LocaleUtil
@@ -95,9 +97,11 @@ open class BaseTest {
     protected val logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO))
 
     protected val expirationCalendar: Calendar = Calendar.getInstance()
+
     init {
         expirationCalendar.add(Calendar.YEAR, 1)
     }
+
     protected val expirationMonth: Int = expirationCalendar.get(Calendar.MONTH) + 1
     protected val expirationYear: Int = expirationCalendar.get(Calendar.YEAR)
 
@@ -186,7 +190,6 @@ open class BaseTest {
     }
 
     protected suspend fun verifyTestUserIdentity() {
-
         val countryCodeAlpha3 = LocaleUtil.toCountryCodeAlpha3(context, AndroidTestData.VerifiedUser.country)
             ?: throw IllegalArgumentException("Unable to convert country code to ISO 3166 Alpha-3")
 
@@ -212,12 +215,16 @@ open class BaseTest {
     }
 
     protected suspend fun createFundingSource(client: SudoVirtualCardsClient, input: CreditCardFundingSourceInput): FundingSource {
-
         // Retrieve the funding source client configuration
         val configuration = client.getFundingSourceClientConfiguration()
 
         // Perform the funding source setup operation
-        val setupInput = SetupFundingSourceInput("USD", FundingSourceType.CREDIT_CARD)
+        val setupInput = SetupFundingSourceInput(
+            "USD",
+            FundingSourceType.CREDIT_CARD,
+            ClientApplicationData("system-test-app"),
+            listOf("stripe")
+        )
         val provisionalFundingSource = client.setupFundingSource(setupInput)
 
         // Process stripe data
@@ -225,7 +232,7 @@ open class BaseTest {
         val stripeIntentWorker = StripeIntentWorker(context, stripeClient)
         val completionData = stripeIntentWorker.confirmSetupIntent(
             input,
-            provisionalFundingSource.provisioningData.clientSecret
+            (provisionalFundingSource.provisioningData as StripeCardProvisioningData).clientSecret
         )
 
         // Perform the funding source completion operation
@@ -268,7 +275,10 @@ open class BaseTest {
                     nextToken = listResult.result.nextToken
                     transactions.addAll(listOutput)
                 }
-                else -> { throw AssertionError("Unexpected ListAPIResult") }
+
+                else -> {
+                    throw AssertionError("Unexpected ListAPIResult")
+                }
             }
         }
         return transactions

@@ -79,7 +79,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should return results when no error present`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -122,7 +121,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should throw when authentication fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -143,7 +141,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should throw when network fails`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -164,7 +161,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should throw when http error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
@@ -197,7 +193,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should throw when random error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -219,7 +214,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should not suppress CancellationException`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         mockAppSyncClient.stub {
@@ -241,7 +235,6 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
 
     @Test
     fun `getSimulatorConversionRates() should throw when backend error occurs`() = runBlocking<Unit> {
-
         holder.callback shouldBe null
 
         val deferredResult = async(Dispatchers.IO) {
