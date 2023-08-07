@@ -368,12 +368,6 @@
   license: The Apache Software License, Version 2.0
   licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
   url: https://developer.android.com/jetpack/androidx
-- artifact: androidx.annotation:annotation:+
-  name: Android Support Library Annotations
-  copyrightHolder: Google, Inc.
-  license: The Apache Software License, Version 2.0
-  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
-  url: https://developer.android.com/jetpack/androidx/releases/annotation#1.4.0
 - artifact: androidx.appcompat:appcompat-resources:+
   name: Android Resources Library
   copyrightHolder: Google, Inc.
@@ -398,3 +392,9 @@
   license: The Apache License, Version 2.0
   licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
   url: https://kotlinlang.org/
+- artifact: androidx.annotation:annotation-jvm:+
+  name: Android Support Library Annotations
+  copyrightHolder: Google, Inc.
+  license: The Apache Software License, Version 2.0
+  licenseUrl: http://www.apache.org/licenses/LICENSE-2.0.txt
+  url: https://developer.android.com/jetpack/androidx/releases/annotation#1.6.0  
