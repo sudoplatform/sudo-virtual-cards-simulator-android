@@ -22,5 +22,5 @@ data class SimulateReversalResponse(
     val amount: Int,
     val currency: String,
     val createdAt: Date = Date(System.currentTimeMillis()),
-    val updatedAt: Date = Date(System.currentTimeMillis())
+    val updatedAt: Date = Date(System.currentTimeMillis()),
 )

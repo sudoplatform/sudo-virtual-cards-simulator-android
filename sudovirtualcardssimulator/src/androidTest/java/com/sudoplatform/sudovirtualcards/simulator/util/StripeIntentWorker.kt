@@ -26,7 +26,7 @@ import com.sudoplatform.sudovirtualcards.util.LocaleUtil
  */
 internal class StripeIntentWorker(
     private val context: Context,
-    private val stripeClient: Stripe
+    private val stripeClient: Stripe,
 ) {
     /**
      * Processes the payment setup confirmation to return the data needed to complete
@@ -37,7 +37,7 @@ internal class StripeIntentWorker(
      */
     suspend fun confirmSetupIntent(
         input: CreditCardFundingSourceInput,
-        clientSecret: String
+        clientSecret: String,
     ): ProviderCompletionData {
         // Build card details
         val cardDetails = PaymentMethodCreateParams.Card.Builder()
@@ -56,7 +56,7 @@ internal class StripeIntentWorker(
                     .setState(input.state)
                     .setPostalCode(input.postalCode)
                     .setCountry(ensureAlpha2CountryCode(context, input.country))
-                    .build()
+                    .build(),
             )
             .build()
         // Confirm setup

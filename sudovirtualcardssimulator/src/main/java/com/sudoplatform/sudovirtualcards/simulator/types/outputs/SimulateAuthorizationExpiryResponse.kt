@@ -18,5 +18,5 @@ import java.util.Date
 data class SimulateAuthorizationExpiryResponse(
     val id: String,
     val createdAt: Date = Date(System.currentTimeMillis()),
-    val updatedAt: Date = Date(System.currentTimeMillis())
+    val updatedAt: Date = Date(System.currentTimeMillis()),
 )

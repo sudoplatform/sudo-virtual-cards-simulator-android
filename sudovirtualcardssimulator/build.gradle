@@ -16,15 +16,15 @@ node {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdk 34
 
     namespace "com.sudoplatform.sudovirtualcards.simulator"
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 31
+        targetSdkVersion 33
         versionCode = 1
-        versionName = "8.0.0"
+        versionName = "9.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "com.sudoplatform.sudovirtualcards.simulator.test"
         consumerProguardFiles 'consumer-rules.pro'
@@ -40,11 +40,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget =  JavaVersion.VERSION_17.toString()
     }
 
     resourcePrefix 'svcs_'
@@ -101,12 +101,12 @@ dependencies {
     }
 
     // Sudo Platform
-    implementation "com.sudoplatform:sudologging:3.0.0"
-    implementation "com.sudoplatform:sudoconfigmanager:6.0.0"
-    implementation "com.sudoplatform:sudouser:17.0.0"
-    implementation "com.sudoplatform:sudovirtualcards:12.0.0"
+    implementation "com.sudoplatform:sudologging:4.0.0"
+    implementation "com.sudoplatform:sudoconfigmanager:7.0.2"
+    implementation "com.sudoplatform:sudouser:18.0.0"
+    implementation "com.sudoplatform:sudovirtualcards:13.0.0"
 
-    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.4.7"
+    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.5.19"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
     // Testing
@@ -114,7 +114,7 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.1.0"
     testImplementation "com.jakewharton.timber:timber:5.0.1"
 
     // Stripe
@@ -136,12 +136,12 @@ dependencies {
     androidTestImplementation "androidx.test:runner:1.5.2"
     androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
     androidTestImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
-    androidTestImplementation "com.jakewharton.timber:timber:4.7.1"
+    androidTestImplementation "com.jakewharton.timber:timber:5.0.1"
 
-    androidTestImplementation "com.sudoplatform:sudoprofiles:13.0.1"
-    androidTestImplementation "com.sudoplatform:sudokeymanager:6.0.0"
-    androidTestImplementation 'com.sudoplatform:sudoentitlements:8.0.1'
-    androidTestImplementation 'com.sudoplatform:sudoidentityverification:12.0.1'
+    androidTestImplementation "com.sudoplatform:sudoprofiles:14.0.0"
+    androidTestImplementation "com.sudoplatform:sudokeymanager:7.0.0"
+    androidTestImplementation 'com.sudoplatform:sudoentitlements:9.0.0'
+    androidTestImplementation 'com.sudoplatform:sudoidentityverification:13.0.0'
 }
 
 // Returns a list of `configurations` which should not be scanned for vulnerabilities
@@ -232,7 +232,6 @@ apply plugin: 'org.jmailen.kotlinter'
 kotlinter {
     ignoreFailures = false
     reporters = ['checkstyle', 'plain']
-    experimentalRules = false
 }
 
 // Apollo Code Generation

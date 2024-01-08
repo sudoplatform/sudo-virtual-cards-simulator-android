@@ -11,20 +11,20 @@ import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.sudoplatform.sudologging.AndroidUtilsLogDriver
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
-import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.appsync.AWSAppSyncClientFactory
-import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
-import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulatorMerchant
+import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateIncrementalAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateReversalInput
+import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationExpiryResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateDebitResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateRefundResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateReversalResponse
+import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulatorMerchant
 
 /**
  * Interface encapsulating a library for interacting with the Sudo Platform Virtual Cards Simulator service.
@@ -130,7 +130,7 @@ interface SudoVirtualCardsSimulatorClient {
     /** Exceptions thrown by [getSimulatorConversionRates] */
     sealed class GetSimulatorConversionRatesException(
         message: String? = null,
-        cause: Throwable? = null
+        cause: Throwable? = null,
     ) : RuntimeException(message, cause) {
         class AuthenticationException(message: String? = null, cause: Throwable? = null) :
             GetSimulatorConversionRatesException(message = message, cause = cause)

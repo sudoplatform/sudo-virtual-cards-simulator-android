@@ -70,7 +70,7 @@ internal class AWSUserPoolAuthenticator(
     private val context: Context,
     private val configurationJson: String,
     private val mobileClient: MobileClientAuthenticator = MobileClientWrapper(),
-    private val logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO))
+    private val logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO)),
 ) : UserPoolAuthenticator {
 
     private var actualState: UserPoolAuthenticator.State = UserPoolAuthenticator.State.UNKNOWN
@@ -91,10 +91,12 @@ internal class AWSUserPoolAuthenticator(
                     userState?.let {
                         actualState = when (it.userState) {
                             UserState.GUEST,
-                            UserState.SIGNED_IN -> UserPoolAuthenticator.State.SIGNED_IN
+                            UserState.SIGNED_IN,
+                            -> UserPoolAuthenticator.State.SIGNED_IN
                             UserState.SIGNED_OUT_FEDERATED_TOKENS_INVALID,
                             UserState.SIGNED_OUT_USER_POOLS_TOKENS_INVALID,
-                            UserState.SIGNED_OUT -> UserPoolAuthenticator.State.SIGNED_OUT
+                            UserState.SIGNED_OUT,
+                            -> UserPoolAuthenticator.State.SIGNED_OUT
                             else -> UserPoolAuthenticator.State.UNKNOWN
                         }
                     }
@@ -106,7 +108,7 @@ internal class AWSUserPoolAuthenticator(
                     actualState = UserPoolAuthenticator.State.UNKNOWN
                     cont.resumeWithException(e as Throwable)
                 }
-            }
+            },
         )
     }
 
@@ -131,7 +133,7 @@ internal class AWSUserPoolAuthenticator(
                     logger.error("signIn $e")
                     cont.resumeWithException(e as Throwable)
                 }
-            }
+            },
         )
     }
 

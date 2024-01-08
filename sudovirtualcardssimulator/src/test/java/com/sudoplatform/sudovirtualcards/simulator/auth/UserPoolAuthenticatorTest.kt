@@ -13,8 +13,6 @@ import com.amazonaws.mobile.client.UserStateDetails
 import com.amazonaws.mobile.client.results.SignInResult
 import com.amazonaws.mobile.client.results.Tokens
 import com.amazonaws.mobile.config.AWSConfiguration
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verifyNoMoreInteractions
 import com.sudoplatform.sudologging.LogDriverInterface
 import com.sudoplatform.sudologging.Logger
 import com.sudoplatform.sudovirtualcards.simulator.BaseTests
@@ -25,6 +23,8 @@ import io.kotlintest.shouldThrow
 import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verifyNoMoreInteractions
 import java.lang.NullPointerException
 
 /**
@@ -80,7 +80,7 @@ class UserPoolAuthenticatorTest : BaseTests() {
             context = mockContext,
             configurationJson = configJson,
             mobileClient = mockMobileClientAuthenticator,
-            logger = mockLogger
+            logger = mockLogger,
         )
     }
 

@@ -24,7 +24,7 @@ internal class SimulatorCognitoUserPoolAuthProvider(
     private val username: String,
     private val password: String,
     @VisibleForTesting
-    private val authenticator: UserPoolAuthenticator = createDefaultUserPoolAuthenticator(context, poolId, clientId, region)
+    private val authenticator: UserPoolAuthenticator = createDefaultUserPoolAuthenticator(context, poolId, clientId, region),
 ) : CognitoUserPoolsAuthProvider {
 
     companion object {
@@ -51,11 +51,11 @@ internal class SimulatorCognitoUserPoolAuthProvider(
             context: Context,
             poolId: String,
             clientId: String,
-            region: String
+            region: String,
         ): UserPoolAuthenticator {
             return AWSUserPoolAuthenticator(
                 context,
-                generateConfiguration(poolId = poolId, clientId = clientId, region = region)
+                generateConfiguration(poolId = poolId, clientId = clientId, region = region),
             )
         }
     }

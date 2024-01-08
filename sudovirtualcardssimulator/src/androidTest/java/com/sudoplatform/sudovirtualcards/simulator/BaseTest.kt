@@ -26,6 +26,7 @@ import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.util.StripeIntentWorker
 import com.sudoplatform.sudovirtualcards.types.ClientApplicationData
 import com.sudoplatform.sudovirtualcards.types.FundingSource
+import com.sudoplatform.sudovirtualcards.types.FundingSourceType
 import com.sudoplatform.sudovirtualcards.types.JsonValue
 import com.sudoplatform.sudovirtualcards.types.ListAPIResult
 import com.sudoplatform.sudovirtualcards.types.ProvisionalVirtualCard
@@ -34,7 +35,6 @@ import com.sudoplatform.sudovirtualcards.types.Transaction
 import com.sudoplatform.sudovirtualcards.types.VirtualCard
 import com.sudoplatform.sudovirtualcards.types.inputs.CompleteFundingSourceInput
 import com.sudoplatform.sudovirtualcards.types.inputs.CreditCardFundingSourceInput
-import com.sudoplatform.sudovirtualcards.types.FundingSourceType
 import com.sudoplatform.sudovirtualcards.types.inputs.ProvisionVirtualCardInput
 import com.sudoplatform.sudovirtualcards.types.inputs.SetupFundingSourceInput
 import com.sudoplatform.sudovirtualcards.util.LocaleUtil
@@ -156,7 +156,7 @@ open class BaseTest {
             privateKey = privateKey,
             publicKey = null,
             keyManager = keyManager,
-            keyId = keyId
+            keyId = keyId,
         )
 
         userClient.registerWithAuthenticationProvider(authProvider, "vc-sim-client-test")
@@ -201,7 +201,7 @@ open class BaseTest {
             AndroidTestData.VerifiedUser.state,
             AndroidTestData.VerifiedUser.postalCode,
             countryCodeAlpha3,
-            AndroidTestData.VerifiedUser.dateOfBirth
+            AndroidTestData.VerifiedUser.dateOfBirth,
         )
         idvClient.verifyIdentity(verifyIdentityInput)
     }
@@ -223,7 +223,7 @@ open class BaseTest {
             "USD",
             FundingSourceType.CREDIT_CARD,
             ClientApplicationData("system-test-app"),
-            listOf("stripe")
+            listOf("stripe"),
         )
         val provisionalFundingSource = client.setupFundingSource(setupInput)
 
@@ -232,14 +232,14 @@ open class BaseTest {
         val stripeIntentWorker = StripeIntentWorker(context, stripeClient)
         val completionData = stripeIntentWorker.confirmSetupIntent(
             input,
-            (provisionalFundingSource.provisioningData as StripeCardProvisioningData).clientSecret
+            (provisionalFundingSource.provisioningData as StripeCardProvisioningData).clientSecret,
         )
 
         // Perform the funding source completion operation
         val completeInput = CompleteFundingSourceInput(
             provisionalFundingSource.id,
             completionData,
-            null
+            null,
         )
         return client.completeFundingSource(completeInput)
     }
@@ -298,7 +298,7 @@ open class BaseTest {
                 AndroidTestData.VerifiedUser.city,
                 AndroidTestData.VerifiedUser.state,
                 AndroidTestData.VerifiedUser.postalCode,
-                AndroidTestData.VerifiedUser.country
+                AndroidTestData.VerifiedUser.country,
             )
             fundingSource = createFundingSource(vcClient, fundingSourceInput)
         } else {
@@ -321,7 +321,7 @@ open class BaseTest {
             state = AndroidTestData.VirtualUser.state,
             postalCode = AndroidTestData.VirtualUser.postalCode,
             country = AndroidTestData.VirtualUser.country,
-            currency = "USD"
+            currency = "USD",
         )
         return createCard(cardInput)
     }

@@ -46,7 +46,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
         AUTHORIZE,
         CREATE_DEBITS,
         CREATE_REFUNDS,
-        LIST_TRANSACTIONS
+        LIST_TRANSACTIONS,
     }
 
     private val timings = mutableMapOf<Step, Long>()
@@ -93,7 +93,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             AndroidTestData.VerifiedUser.city,
             AndroidTestData.VerifiedUser.state,
             AndroidTestData.VerifiedUser.postalCode,
-            AndroidTestData.VerifiedUser.country
+            AndroidTestData.VerifiedUser.country,
         )
         val fundingSource = measure(Step.CREATE_FUNDING_SOURCE) {
             createFundingSource(vcClient, fundingSourceInput)
@@ -117,7 +117,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             state = AndroidTestData.VirtualUser.state,
             postalCode = AndroidTestData.VirtualUser.postalCode,
             country = AndroidTestData.VirtualUser.country,
-            currency = "USD"
+            currency = "USD",
         )
         val card = measure(Step.CREATE_CARD) {
             createCard(cardInput)
@@ -137,7 +137,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
 
         val authResponse = measure(Step.AUTHORIZE) {
@@ -148,7 +148,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
         // Create lots of debits
         val debitInput = SimulateDebitInput(
             authorizationId = authResponse.id,
-            amount = authInput.amount / NUMBER_TRANSACTIONS
+            amount = authInput.amount / NUMBER_TRANSACTIONS,
         )
         val debitIds = mutableListOf<String>()
         measure(Step.CREATE_DEBITS) {
@@ -162,7 +162,7 @@ class SudoVirtualCardsSimulatorTransactionPerformanceTest : BaseTest() {
             debitIds.forEach { id ->
                 val refundInput = SimulateRefundInput(
                     debitId = id,
-                    amount = authInput.amount / NUMBER_TRANSACTIONS
+                    amount = authInput.amount / NUMBER_TRANSACTIONS,
                 )
                 simulatorClient.simulateRefund(refundInput)
             }

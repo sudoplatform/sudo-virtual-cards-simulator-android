@@ -110,7 +110,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
 
         val authResponse = simulatorClient.simulateAuthorization(authInput)
@@ -145,14 +145,14 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
         val authResponse = simulatorClient.simulateAuthorization(authInput)
 
         // Increase the value of the authorization
         val incAuthInput = SimulateIncrementalAuthorizationInput(
             authorizationId = authResponse.id,
-            amount = authInput.amount
+            amount = authInput.amount,
         )
         val incAuthResponse = simulatorClient.simulateIncrementalAuthorization(incAuthInput)
         logger.debug("$incAuthResponse")
@@ -184,14 +184,14 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
         val authResponse = simulatorClient.simulateAuthorization(authInput)
 
         // Create a debit for the authorized amount
         val debitInput = SimulateDebitInput(
             authorizationId = authResponse.id,
-            amount = authInput.amount
+            amount = authInput.amount,
         )
         val debitResponse = simulatorClient.simulateDebit(debitInput)
         logger.debug("$debitResponse")
@@ -230,7 +230,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             AndroidTestData.VerifiedUser.city,
             AndroidTestData.VerifiedUser.state,
             AndroidTestData.VerifiedUser.postalCode,
-            AndroidTestData.VerifiedUser.country
+            AndroidTestData.VerifiedUser.country,
         )
         val fundingSource = createFundingSource(vcClient, fundingSourceInput)
 
@@ -245,14 +245,14 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
         val authResponse = simulatorClient.simulateAuthorization(authInput)
 
         // Create a debit for the authorized amount
         val debitInput = SimulateDebitInput(
             authorizationId = authResponse.id,
-            amount = authInput.amount
+            amount = authInput.amount,
         )
         val debitResponse = simulatorClient.simulateDebit(debitInput)
         logger.debug("$debitResponse")
@@ -267,7 +267,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
         // Refund the debit in two halves
         val refundInput = SimulateRefundInput(
             debitId = debitResponse.id,
-            amount = debitInput.amount / 2
+            amount = debitInput.amount / 2,
         )
         for (i in 0..1) {
             val refundResponse = simulatorClient.simulateRefund(refundInput)
@@ -338,7 +338,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             amount = 42_00,
             merchantId = merchant.id,
             expirationMonth = expirationCalendar.get(Calendar.MONTH) + 1,
-            expirationYear = expirationCalendar.get(Calendar.YEAR)
+            expirationYear = expirationCalendar.get(Calendar.YEAR),
         )
 
         shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.CardNotFoundException> {
@@ -352,7 +352,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
         val input = SimulateIncrementalAuthorizationInput(
             authorizationId = "6666666666666666",
-            amount = 42_00
+            amount = 42_00,
         )
 
         shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthorizationNotFoundException> {
@@ -366,7 +366,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
         val input = SimulateDebitInput(
             authorizationId = "6666666666666666",
-            amount = 42_00
+            amount = 42_00,
         )
 
         shouldThrow<SudoVirtualCardsSimulatorClient.DebitException.AuthorizationNotFoundException> {
@@ -380,7 +380,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
         val input = SimulateRefundInput(
             debitId = "6666666666666666",
-            amount = 42_00
+            amount = 42_00,
         )
 
         shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.DebitNotFoundException> {
@@ -394,7 +394,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
 
         val input = SimulateReversalInput(
             authorizationId = "6666666666666666",
-            amount = 42_00
+            amount = 42_00,
         )
 
         shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.AuthorizationNotFoundException> {
@@ -428,7 +428,7 @@ class SudoVirtualCardsSimulatorClientIntegrationTest : BaseTest() {
             merchantId = merchant.id,
             securityCode = card.securityCode,
             expirationMonth = card.expiry.mm.toInt(),
-            expirationYear = card.expiry.yyyy.toInt()
+            expirationYear = card.expiry.yyyy.toInt(),
         )
 
         val authResponse = simulatorClient.simulateAuthorization(authInput)

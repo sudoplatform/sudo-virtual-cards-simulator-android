@@ -43,7 +43,7 @@ object AndroidTestData {
         lastName = "Bear",
         label = "Shopping",
         notes = null,
-        avatar = null
+        avatar = null,
     )
 
     object IdentityVerification {

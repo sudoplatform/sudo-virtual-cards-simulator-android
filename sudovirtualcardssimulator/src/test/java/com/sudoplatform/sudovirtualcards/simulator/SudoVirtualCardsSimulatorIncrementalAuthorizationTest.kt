@@ -12,13 +12,6 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doThrow
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.stub
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
 import com.sudoplatform.sudologging.LogDriverInterface
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
@@ -41,6 +34,13 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import java.net.HttpURLConnection
 
 /**
@@ -72,7 +72,7 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
 
     private val request = SimulateIncrementalAuthorizationInput(
         "authId",
-        10_000
+        10_000,
     )
 
     @Before
@@ -102,7 +102,7 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
             SimulateIncrementalAuthorizationMutation.BilledAmount("typename", "currency", 10_000),
             null,
             1.0,
-            1.0
+            1.0,
         )
 
         val req = SimulateIncrementalAuthorizationRequest.builder()

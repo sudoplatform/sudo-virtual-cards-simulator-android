@@ -12,13 +12,6 @@ import com.apollographql.apollo.api.Response
 import com.apollographql.apollo.exception.ApolloException
 import com.apollographql.apollo.exception.ApolloHttpException
 import com.apollographql.apollo.exception.ApolloNetworkException
-import org.mockito.kotlin.any
-import org.mockito.kotlin.doReturn
-import org.mockito.kotlin.doThrow
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.stub
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoMoreInteractions
 import com.sudoplatform.sudologging.LogDriverInterface
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
@@ -43,6 +36,13 @@ import okhttp3.ResponseBody.Companion.toResponseBody
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.stub
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import java.net.HttpURLConnection
 
 /**
@@ -77,7 +77,7 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
         city = TestData.VerifiedUser.city,
         postalCode = TestData.VerifiedUser.postalCode,
         state = TestData.VerifiedUser.state,
-        country = TestData.VerifiedUser.country
+        country = TestData.VerifiedUser.country,
     )
 
     private val request = SimulateAuthorizationInput(
@@ -87,7 +87,7 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
         1,
         2021,
         billingAddress,
-        "securityCode"
+        "securityCode",
     )
 
     @Before
@@ -117,7 +117,7 @@ class SudoVirtualCardsSimulatorAuthorizationTest : BaseTests() {
             SimulateAuthorizationMutation.BilledAmount("typename", "currency", 10_000),
             null,
             1.0,
-            1.0
+            1.0,
         )
 
         val expiry = ExpiryInput.builder()

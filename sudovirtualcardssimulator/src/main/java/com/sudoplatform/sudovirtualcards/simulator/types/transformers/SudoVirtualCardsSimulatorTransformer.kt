@@ -14,12 +14,12 @@ import com.sudoplatform.sudovirtualcards.simulator.graphql.SimulateDebitMutation
 import com.sudoplatform.sudovirtualcards.simulator.graphql.SimulateIncrementalAuthorizationMutation
 import com.sudoplatform.sudovirtualcards.simulator.graphql.SimulateRefundMutation
 import com.sudoplatform.sudovirtualcards.simulator.graphql.SimulateReversalMutation
+import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationExpiryResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateDebitResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateRefundResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateReversalResponse
-import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulatorMerchant
 import java.util.Date
 
@@ -49,7 +49,7 @@ internal object SudoVirtualCardsSimulatorTransformer {
                 declineAfterAuthorization = merchant.declineAfterAuthorization(),
                 declineBeforeAuthorization = merchant.declineBeforeAuthorization(),
                 createdAt = merchant.createdAtEpochMs().toDate(),
-                updatedAt = merchant.updatedAtEpochMs().toDate()
+                updatedAt = merchant.updatedAtEpochMs().toDate(),
             )
         }.toList()
     }
@@ -61,12 +61,12 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The list of [CurrencyAmount]s
      */
     fun buildCurrenciesFromQueryResults(
-        queryResults: List<ListSimulatorConversionRatesQuery.ListSimulatorConversionRate>
+        queryResults: List<ListSimulatorConversionRatesQuery.ListSimulatorConversionRate>,
     ): List<CurrencyAmount> {
         return queryResults.map { conversionRate ->
             CurrencyAmount(
                 currency = conversionRate.currency(),
-                amount = conversionRate.amount()
+                amount = conversionRate.amount(),
             )
         }.toList()
     }
@@ -78,7 +78,7 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateAuthorizationResponse]
      */
     fun buildAuthorizationFromMutationResult(
-        mutationResult: SimulateAuthorizationMutation.SimulateAuthorization
+        mutationResult: SimulateAuthorizationMutation.SimulateAuthorization,
     ): SimulateAuthorizationResponse {
         return SimulateAuthorizationResponse(
             id = mutationResult.id(),
@@ -87,7 +87,7 @@ internal object SudoVirtualCardsSimulatorTransformer {
             currency = mutationResult.billedAmount()?.currency(),
             declineReason = mutationResult.declineReason(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 
@@ -98,7 +98,7 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateAuthorizationResponse]
      */
     fun buildAuthorizationFromMutationResult(
-        mutationResult: SimulateIncrementalAuthorizationMutation.SimulateIncrementalAuthorization
+        mutationResult: SimulateIncrementalAuthorizationMutation.SimulateIncrementalAuthorization,
     ): SimulateAuthorizationResponse {
         return SimulateAuthorizationResponse(
             id = mutationResult.id(),
@@ -107,7 +107,7 @@ internal object SudoVirtualCardsSimulatorTransformer {
             currency = mutationResult.billedAmount()?.currency(),
             declineReason = mutationResult.declineReason(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 
@@ -118,12 +118,12 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateAuthorizationExpiryResponse]
      */
     fun buildAuthorizationExpiryFromMutationResult(
-        mutationResult: SimulateAuthorizationExpiryMutation.SimulateAuthorizationExpiry
+        mutationResult: SimulateAuthorizationExpiryMutation.SimulateAuthorizationExpiry,
     ): SimulateAuthorizationExpiryResponse {
         return SimulateAuthorizationExpiryResponse(
             id = mutationResult.id(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 
@@ -134,14 +134,14 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateDebitResponse]
      */
     fun buildDebitFromMutationResult(
-        mutationResult: SimulateDebitMutation.SimulateDebit
+        mutationResult: SimulateDebitMutation.SimulateDebit,
     ): SimulateDebitResponse {
         return SimulateDebitResponse(
             id = mutationResult.id(),
             amount = mutationResult.billedAmount().amount(),
             currency = mutationResult.billedAmount().currency(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 
@@ -152,14 +152,14 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateRefundResponse]
      */
     fun buildRefundFromMutationResult(
-        mutationResult: SimulateRefundMutation.SimulateRefund
+        mutationResult: SimulateRefundMutation.SimulateRefund,
     ): SimulateRefundResponse {
         return SimulateRefundResponse(
             id = mutationResult.id(),
             amount = mutationResult.billedAmount().amount(),
             currency = mutationResult.billedAmount().currency(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 
@@ -170,14 +170,14 @@ internal object SudoVirtualCardsSimulatorTransformer {
      * @return The [SimulateReversalResponse]
      */
     fun buildReversalFromMutationResult(
-        mutationResult: SimulateReversalMutation.SimulateReversal
+        mutationResult: SimulateReversalMutation.SimulateReversal,
     ): SimulateReversalResponse {
         return SimulateReversalResponse(
             id = mutationResult.id(),
             amount = mutationResult.billedAmount().amount(),
             currency = mutationResult.billedAmount().currency(),
             createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate()
+            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
         )
     }
 }

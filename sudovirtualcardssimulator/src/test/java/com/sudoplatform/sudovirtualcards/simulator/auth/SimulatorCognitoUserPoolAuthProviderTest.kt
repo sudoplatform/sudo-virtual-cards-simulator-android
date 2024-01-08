@@ -9,6 +9,11 @@ package com.sudoplatform.sudovirtualcards.simulator.auth
 import android.content.Context
 import com.amazonaws.mobile.client.results.Token
 import com.amazonaws.mobile.client.results.Tokens
+import com.sudoplatform.sudovirtualcards.simulator.BaseTests
+import io.kotlintest.shouldThrow
+import kotlinx.coroutines.runBlocking
+import org.junit.After
+import org.junit.Test
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.doReturnConsecutively
 import org.mockito.kotlin.mock
@@ -16,11 +21,6 @@ import org.mockito.kotlin.stub
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
-import com.sudoplatform.sudovirtualcards.simulator.BaseTests
-import io.kotlintest.shouldThrow
-import kotlinx.coroutines.runBlocking
-import org.junit.After
-import org.junit.Test
 import java.lang.IllegalStateException
 
 /**
@@ -54,7 +54,7 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
             "region",
             "username",
             "password",
-            mockUserPoolAuthenticator
+            mockUserPoolAuthenticator,
         )
     }
 
@@ -68,7 +68,7 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_IN
+                UserPoolAuthenticator.State.SIGNED_IN,
             )
         }
 
@@ -86,7 +86,7 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_OUT
+                UserPoolAuthenticator.State.SIGNED_OUT,
             )
         }
 
@@ -104,7 +104,7 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
         mockUserPoolAuthenticator.stub {
             on { state } doReturnConsecutively listOf(
                 UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_IN
+                UserPoolAuthenticator.State.SIGNED_IN,
             )
             onBlocking { getTokens() } doReturn null
         }

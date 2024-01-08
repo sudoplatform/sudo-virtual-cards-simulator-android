@@ -36,7 +36,7 @@ class ParcelTest {
             declineAfterAuthorization = false,
             declineBeforeAuthorization = false,
             createdAt = Date(42L),
-            updatedAt = Date(43L)
+            updatedAt = Date(43L),
         )
         val billingAddress = BillingAddress(
             addressLine1 = "123 Nowhere St",
@@ -44,7 +44,7 @@ class ParcelTest {
             city = "Robina",
             state = "Queensland",
             postalCode = "4230",
-            country = "AU"
+            country = "AU",
         )
 
         val bundle = Bundle()

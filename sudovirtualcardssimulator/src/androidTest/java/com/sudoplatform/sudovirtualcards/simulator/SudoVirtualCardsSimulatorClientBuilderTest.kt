@@ -68,7 +68,7 @@ class SudoVirtualCardsSimulatorClientBuilderTest {
             clientId = "42",
             region = "42",
             username = "foo",
-            password = "bar"
+            password = "bar",
         )
         val appSyncClient = AWSAppSyncClient.builder()
             .context(context)

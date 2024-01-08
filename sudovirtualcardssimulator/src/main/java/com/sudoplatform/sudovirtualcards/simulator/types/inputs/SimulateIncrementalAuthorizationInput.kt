@@ -15,5 +15,5 @@ package com.sudoplatform.sudovirtualcards.simulator.types.inputs
  */
 data class SimulateIncrementalAuthorizationInput(
     val authorizationId: String,
-    val amount: Int
+    val amount: Int,
 )

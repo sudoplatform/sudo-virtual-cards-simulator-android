@@ -14,5 +14,5 @@ package com.sudoplatform.sudovirtualcards.simulator.types.inputs
  */
 data class SimulateReversalInput(
     val authorizationId: String,
-    val amount: Int
+    val amount: Int,
 )

@@ -13,7 +13,6 @@ import com.apollographql.apollo.exception.ApolloException
 import com.sudoplatform.sudologging.AndroidUtilsLogDriver
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
-import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.appsync.enqueue
 import com.sudoplatform.sudovirtualcards.simulator.appsync.enqueueFirst
 import com.sudoplatform.sudovirtualcards.simulator.graphql.ListSimulatorConversionRatesQuery
@@ -32,17 +31,18 @@ import com.sudoplatform.sudovirtualcards.simulator.graphql.type.SimulateDebitReq
 import com.sudoplatform.sudovirtualcards.simulator.graphql.type.SimulateIncrementalAuthorizationRequest
 import com.sudoplatform.sudovirtualcards.simulator.graphql.type.SimulateRefundRequest
 import com.sudoplatform.sudovirtualcards.simulator.graphql.type.SimulateReversalRequest
+import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateIncrementalAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateRefundInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateReversalInput
+import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationExpiryResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateAuthorizationResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateDebitResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateRefundResponse
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulateReversalResponse
-import com.sudoplatform.sudovirtualcards.simulator.types.outputs.CurrencyAmount
 import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulatorMerchant
 import com.sudoplatform.sudovirtualcards.simulator.types.transformers.SudoVirtualCardsSimulatorTransformer
 import kotlinx.coroutines.CancellationException
@@ -67,7 +67,7 @@ private const val ERROR_ALREADY_EXPIRED = "AlreadyExpiredError"
  */
 internal class DefaultSudoVirtualCardsSimulatorClient(
     private val appSyncClient: AWSAppSyncClient,
-    private val logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO))
+    private val logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO)),
 ) : SudoVirtualCardsSimulatorClient {
 
     /**
@@ -78,7 +78,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "8.0.0"
+    private val version: String = "9.0.0"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {
@@ -92,7 +92,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             if (queryResponse.hasErrors()) {
                 logger.warning("errors = ${queryResponse.errors()}")
                 throw SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.FailedException(
-                    queryResponse.errors().first().message()
+                    queryResponse.errors().first().message(),
                 )
             }
 
@@ -105,7 +105,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException -> throw e
+                is SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException,
+                -> throw e
                 is ApolloException -> throw interpretGetMerchantsFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.UnknownException(cause = e)
             }
@@ -127,7 +128,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             if (queryResponse.hasErrors()) {
                 logger.warning("errors = ${queryResponse.errors()}")
                 throw SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.FailedException(
-                    queryResponse.errors().first().message()
+                    queryResponse.errors().first().message(),
                 )
             }
 
@@ -138,7 +139,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException -> throw e
+                is SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException,
+                -> throw e
                 is ApolloException -> throw interpretGetConversionRatesFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.UnknownException(cause = e)
             }
@@ -196,7 +198,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.AuthorizationException -> throw e
+                is SudoVirtualCardsSimulatorClient.AuthorizationException,
+                -> throw e
                 is ApolloException -> throw interpretAuthorizeFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException(cause = e)
             }
@@ -234,7 +237,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.AuthorizationException -> throw e
+                is SudoVirtualCardsSimulatorClient.AuthorizationException,
+                -> throw e
                 is ApolloException -> throw interpretAuthorizeFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException(cause = e)
             }
@@ -268,7 +272,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.AuthorizationException -> throw e
+                is SudoVirtualCardsSimulatorClient.AuthorizationException,
+                -> throw e
                 is ApolloException -> throw interpretAuthorizeFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException(cause = e)
             }
@@ -305,7 +310,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.DebitException -> throw e
+                is SudoVirtualCardsSimulatorClient.DebitException,
+                -> throw e
                 is ApolloException -> throw interpretDebitFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.DebitException.UnknownException(cause = e)
             }
@@ -342,7 +348,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.RefundException -> throw e
+                is SudoVirtualCardsSimulatorClient.RefundException,
+                -> throw e
                 is ApolloException -> throw interpretRefundFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.RefundException.UnknownException(cause = e)
             }
@@ -379,7 +386,8 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.debug("error $e")
             when (e) {
                 is CancellationException,
-                is SudoVirtualCardsSimulatorClient.ReversalException -> throw e
+                is SudoVirtualCardsSimulatorClient.ReversalException,
+                -> throw e
                 is ApolloException -> throw interpretReversalFailure(e)
                 else -> throw SudoVirtualCardsSimulatorClient.ReversalException.UnknownException(cause = e)
             }
@@ -475,10 +483,10 @@ private fun ApolloException.isAuthenticationFailure(): Pair<String, Throwable>? 
     while (cause != null) {
         val msg = cause.message
         if (msg != null && (
-            msg.contains("Cognito User Pools token") ||
-                msg.contains("Cognito Identity") ||
-                msg.contains("Cognito UserPool")
-            )
+                msg.contains("Cognito User Pools token") ||
+                    msg.contains("Cognito Identity") ||
+                    msg.contains("Cognito UserPool")
+                )
         ) {
             return Pair(msg, cause)
         }

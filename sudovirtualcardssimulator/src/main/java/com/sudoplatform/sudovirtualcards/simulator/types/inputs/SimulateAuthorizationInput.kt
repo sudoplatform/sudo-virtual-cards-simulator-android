@@ -26,5 +26,5 @@ data class SimulateAuthorizationInput(
     val expirationMonth: Int,
     val expirationYear: Int,
     val billingAddress: BillingAddress? = null,
-    val securityCode: String? = null
+    val securityCode: String? = null,
 )

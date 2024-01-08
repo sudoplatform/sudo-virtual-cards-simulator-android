@@ -7,10 +7,10 @@
 package com.sudoplatform.sudovirtualcards.simulator.samples
 
 import android.content.Context
-import org.mockito.kotlin.mock
 import com.sudoplatform.sudovirtualcards.simulator.BaseTests
 import com.sudoplatform.sudovirtualcards.simulator.SudoVirtualCardsSimulatorClient
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 /**
  * These are sample snippets of code that are included in the generated documentation. They are

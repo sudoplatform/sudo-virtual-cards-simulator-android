@@ -43,5 +43,5 @@ data class SimulatorMerchant(
     val declineAfterAuthorization: Boolean,
     val declineBeforeAuthorization: Boolean,
     val createdAt: Date,
-    val updatedAt: Date
+    val updatedAt: Date,
 ) : Parcelable

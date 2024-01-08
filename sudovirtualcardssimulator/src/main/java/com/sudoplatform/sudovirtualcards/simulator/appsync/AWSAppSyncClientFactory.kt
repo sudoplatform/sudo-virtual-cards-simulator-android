@@ -70,7 +70,7 @@ internal class AWSAppSyncClientFactory {
                             'ApiUrl': '$apiUrl', 'Region': '$region', 'AuthMode': 'AMAZON_COGNITO_USER_POOLS'}
                     }
                 }
-                    """.trimIndent()
+                    """.trimIndent(),
                 )
                 val authProvider = SimulatorCognitoUserPoolAuthProvider(
                     context = context,
@@ -78,7 +78,7 @@ internal class AWSAppSyncClientFactory {
                     clientId = clientId!!,
                     region = region!!,
                     username = username,
-                    password = password
+                    password = password,
                 )
                 return AWSAppSyncClient.builder()
                     .context(context)

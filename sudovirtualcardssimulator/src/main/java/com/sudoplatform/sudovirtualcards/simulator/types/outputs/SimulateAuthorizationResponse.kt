@@ -27,5 +27,5 @@ data class SimulateAuthorizationResponse(
     val currency: String? = null,
     val declineReason: String? = null,
     val createdAt: Date = Date(System.currentTimeMillis()),
-    val updatedAt: Date = Date(System.currentTimeMillis())
+    val updatedAt: Date = Date(System.currentTimeMillis()),
 )
