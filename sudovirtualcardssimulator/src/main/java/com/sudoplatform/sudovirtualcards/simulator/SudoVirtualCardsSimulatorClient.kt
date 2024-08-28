@@ -1,5 +1,5 @@
 /*
- * Copyright © 2023 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2024 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -7,11 +7,11 @@
 package com.sudoplatform.sudovirtualcards.simulator
 
 import android.content.Context
-import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient
 import com.sudoplatform.sudologging.AndroidUtilsLogDriver
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
-import com.sudoplatform.sudovirtualcards.simulator.appsync.AWSAppSyncClientFactory
+import com.sudoplatform.sudouser.amplify.GraphQLClient
+import com.sudoplatform.sudovirtualcards.simulator.appsync.GraphQLClientFactory
 import com.sudoplatform.sudovirtualcards.simulator.logging.LogConstants
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateAuthorizationInput
 import com.sudoplatform.sudovirtualcards.simulator.types.inputs.SimulateDebitInput
@@ -50,7 +50,7 @@ interface SudoVirtualCardsSimulatorClient {
         private var username: String? = null
         private var password: String? = null
         private var apiKey: String? = null
-        private var appSyncClient: AWSAppSyncClient? = null
+        private var graphQLClient: GraphQLClient? = null
         private var logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO))
 
         /**
@@ -62,7 +62,7 @@ interface SudoVirtualCardsSimulatorClient {
 
         /**
          * Provide the username to authenticate with the simulator.
-         * This is required input if you are not supplying your own [AWSAppSyncClient].
+         * This is required input if you are not supplying your own [GraphQLClient].
          */
         fun setUsername(username: String) = also {
             it.username = username
@@ -70,7 +70,7 @@ interface SudoVirtualCardsSimulatorClient {
 
         /**
          * Provide the password to authenticate with the simulator.
-         * This is required input if you are not supplying your own [AWSAppSyncClient].
+         * This is required input if you are not supplying your own [GraphQLClient].
          */
         fun setPassword(password: String) = also {
             it.password = password
@@ -78,20 +78,20 @@ interface SudoVirtualCardsSimulatorClient {
 
         /**
          * Provide the API key to authenticate with the simulator.
-         * This is required input if you are not supplying your own [AWSAppSyncClient].
+         * This is required input if you are not supplying your own [GraphQLClient].
          */
         fun setApiKey(apiKey: String) = also {
             it.apiKey = apiKey
         }
 
         /**
-         * Provide an [AWSAppSyncClient] for the [SudoVirtualCardsSimulatorClient] to use
-         * (optional input). If you do not supply this value an [AWSAppSyncClient] will
-         * be constructed and used. If you provide the [AWSAppSyncClient] via this method
+         * Provide an [GraphQLClient] for the [SudoVirtualCardsSimulatorClient] to use
+         * (optional input). If you do not supply this value an [GraphQLClient] will
+         * be constructed and used. If you provide the [GraphQLClient] via this method
          * you do not need to provide the [context], [username] and [password].
          */
-        fun setAppSyncClient(client: AWSAppSyncClient) = also {
-            it.appSyncClient = client
+        fun setGraphQLClient(client: GraphQLClient) = also {
+            it.graphQLClient = client
         }
 
         /**
@@ -109,11 +109,11 @@ interface SudoVirtualCardsSimulatorClient {
          * section with the elements apiUrl, poolId, region and clientId.
          */
         fun build(): SudoVirtualCardsSimulatorClient {
-            if (appSyncClient == null) {
-                // User has not supplied their own AWSAppSyncClient so create our own
-                appSyncClient = AWSAppSyncClientFactory.getAppSyncClient(context, username, password, apiKey)
+            if (graphQLClient == null) {
+                // User has not supplied their own GraphQLClient so create our own
+                graphQLClient = GraphQLClientFactory.getGraphQLClient(context, username, password, apiKey)
             }
-            return DefaultSudoVirtualCardsSimulatorClient(appSyncClient!!, logger)
+            return DefaultSudoVirtualCardsSimulatorClient(graphQLClient!!, logger)
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2024 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -8,7 +8,7 @@ package com.sudoplatform.sudovirtualcards.simulator.auth
 
 import android.content.Context
 import androidx.annotation.VisibleForTesting
-import com.amazonaws.mobileconnectors.appsync.sigv4.CognitoUserPoolsAuthProvider
+import com.amplifyframework.api.aws.sigv4.CognitoUserPoolsAuthProvider
 import kotlinx.coroutines.runBlocking
 
 /**
@@ -75,5 +75,9 @@ internal class SimulatorCognitoUserPoolAuthProvider(
 
             throw IllegalStateException("Failed to authenticate with Cognito")
         }
+    }
+
+    override fun getUsername(): String {
+        return username
     }
 }

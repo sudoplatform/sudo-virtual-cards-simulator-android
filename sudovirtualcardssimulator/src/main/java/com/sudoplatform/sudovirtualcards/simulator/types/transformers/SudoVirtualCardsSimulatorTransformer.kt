@@ -1,5 +1,5 @@
 /*
- * Copyright © 2022 Anonyome Labs, Inc. All rights reserved.
+ * Copyright © 2024 Anonyome Labs, Inc. All rights reserved.
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -37,19 +37,19 @@ internal object SudoVirtualCardsSimulatorTransformer {
     fun buildMerchantsFromQueryResults(queryResults: List<ListSimulatorMerchantsQuery.ListSimulatorMerchant>): List<SimulatorMerchant> {
         return queryResults.map { merchant ->
             SimulatorMerchant(
-                id = merchant.id(),
-                name = merchant.name(),
-                description = merchant.description(),
-                mcc = merchant.mcc(),
-                city = merchant.city(),
-                state = merchant.state().takeIf { it != null },
-                postalCode = merchant.postalCode(),
-                country = merchant.country(),
-                currency = merchant.currency(),
-                declineAfterAuthorization = merchant.declineAfterAuthorization(),
-                declineBeforeAuthorization = merchant.declineBeforeAuthorization(),
-                createdAt = merchant.createdAtEpochMs().toDate(),
-                updatedAt = merchant.updatedAtEpochMs().toDate(),
+                id = merchant.id,
+                name = merchant.name,
+                description = merchant.description,
+                mcc = merchant.mcc,
+                city = merchant.city,
+                state = merchant.state.takeIf { it != null },
+                postalCode = merchant.postalCode,
+                country = merchant.country,
+                currency = merchant.currency,
+                declineAfterAuthorization = merchant.declineAfterAuthorization,
+                declineBeforeAuthorization = merchant.declineBeforeAuthorization,
+                createdAt = merchant.createdAtEpochMs.toDate(),
+                updatedAt = merchant.updatedAtEpochMs.toDate(),
             )
         }.toList()
     }
@@ -65,8 +65,8 @@ internal object SudoVirtualCardsSimulatorTransformer {
     ): List<CurrencyAmount> {
         return queryResults.map { conversionRate ->
             CurrencyAmount(
-                currency = conversionRate.currency(),
-                amount = conversionRate.amount(),
+                currency = conversionRate.currency,
+                amount = conversionRate.amount,
             )
         }.toList()
     }
@@ -81,13 +81,13 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateAuthorizationMutation.SimulateAuthorization,
     ): SimulateAuthorizationResponse {
         return SimulateAuthorizationResponse(
-            id = mutationResult.id(),
-            isApproved = mutationResult.approved(),
-            amount = mutationResult.billedAmount()?.amount(),
-            currency = mutationResult.billedAmount()?.currency(),
-            declineReason = mutationResult.declineReason(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            isApproved = mutationResult.approved,
+            amount = mutationResult.billedAmount?.amount,
+            currency = mutationResult.billedAmount?.currency,
+            declineReason = mutationResult.declineReason,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 
@@ -101,13 +101,13 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateIncrementalAuthorizationMutation.SimulateIncrementalAuthorization,
     ): SimulateAuthorizationResponse {
         return SimulateAuthorizationResponse(
-            id = mutationResult.id(),
-            isApproved = mutationResult.approved(),
-            amount = mutationResult.billedAmount()?.amount(),
-            currency = mutationResult.billedAmount()?.currency(),
-            declineReason = mutationResult.declineReason(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            isApproved = mutationResult.approved,
+            amount = mutationResult.billedAmount?.amount,
+            currency = mutationResult.billedAmount?.currency,
+            declineReason = mutationResult.declineReason,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 
@@ -121,9 +121,9 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateAuthorizationExpiryMutation.SimulateAuthorizationExpiry,
     ): SimulateAuthorizationExpiryResponse {
         return SimulateAuthorizationExpiryResponse(
-            id = mutationResult.id(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 
@@ -137,11 +137,11 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateDebitMutation.SimulateDebit,
     ): SimulateDebitResponse {
         return SimulateDebitResponse(
-            id = mutationResult.id(),
-            amount = mutationResult.billedAmount().amount(),
-            currency = mutationResult.billedAmount().currency(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            amount = mutationResult.billedAmount.amount,
+            currency = mutationResult.billedAmount.currency,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 
@@ -155,11 +155,11 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateRefundMutation.SimulateRefund,
     ): SimulateRefundResponse {
         return SimulateRefundResponse(
-            id = mutationResult.id(),
-            amount = mutationResult.billedAmount().amount(),
-            currency = mutationResult.billedAmount().currency(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            amount = mutationResult.billedAmount.amount,
+            currency = mutationResult.billedAmount.currency,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 
@@ -173,11 +173,11 @@ internal object SudoVirtualCardsSimulatorTransformer {
         mutationResult: SimulateReversalMutation.SimulateReversal,
     ): SimulateReversalResponse {
         return SimulateReversalResponse(
-            id = mutationResult.id(),
-            amount = mutationResult.billedAmount().amount(),
-            currency = mutationResult.billedAmount().currency(),
-            createdAt = mutationResult.createdAtEpochMs().toDate(),
-            updatedAt = mutationResult.updatedAtEpochMs().toDate(),
+            id = mutationResult.id,
+            amount = mutationResult.billedAmount.amount,
+            currency = mutationResult.billedAmount.currency,
+            createdAt = mutationResult.createdAtEpochMs.toDate(),
+            updatedAt = mutationResult.updatedAtEpochMs.toDate(),
         )
     }
 }

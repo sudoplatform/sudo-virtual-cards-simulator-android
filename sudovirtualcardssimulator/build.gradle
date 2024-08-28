@@ -1,5 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'com.amazonaws.appsync'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.owasp.dependencycheck'
@@ -11,10 +10,6 @@ jacoco {
     toolVersion = "0.8.10"
 }
 
-node {
-    version = "16.18.0"
-}
-
 android {
     compileSdk 34
 
@@ -22,9 +17,9 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode = 1
-        versionName = "9.0.0"
+        versionName = "10.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "com.sudoplatform.sudovirtualcards.simulator.test"
         consumerProguardFiles 'consumer-rules.pro'
@@ -82,7 +77,7 @@ android {
 
 dependencies {
     // Kotlin
-    def coroutine_version = '1.7.1'
+    def coroutine_version = '1.8.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
@@ -93,20 +88,25 @@ dependencies {
     // Follow the process at https://anonyome.atlassian.net/wiki/spaces/PLA/pages/840073287/AWS+Android+SDK+versions+to+use+for+platform+SDKs
     // for updating AWS SDK versions.
     implementation "com.amazonaws:aws-android-sdk-core:$aws_version!!"
-    implementation "com.amazonaws:aws-android-sdk-appsync:$appsync_version!!"
+    implementation "com.amazonaws:aws-android-sdk-mobile-client:$aws_version!!"
     constraints {
         implementation("com.google.android.gms:play-services-basement:18.1.0") {
             because("Versions < 18.1.0 have CVE-2022-1799")
         }
     }
+    // Amplify
+    implementation "com.amplifyframework:core-kotlin:$amplify_version"
+    implementation "com.amplifyframework:aws-api-appsync:$amplify_version"
+    implementation "com.amplifyframework:aws-api:$amplify_version"
+    implementation "com.amplifyframework:aws-auth-cognito:$amplify_version"
 
     // Sudo Platform
-    implementation "com.sudoplatform:sudologging:4.0.0"
-    implementation "com.sudoplatform:sudoconfigmanager:7.0.2"
-    implementation "com.sudoplatform:sudouser:18.0.0"
-    implementation "com.sudoplatform:sudovirtualcards:13.0.0"
+    implementation "com.sudoplatform:sudologging:5.0.0"
+    implementation "com.sudoplatform:sudoconfigmanager:8.0.0"
+    implementation "com.sudoplatform:sudouser:20.0.0"
+    implementation "com.sudoplatform:sudoapiclient:11.1.1"
 
-    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.5.19"
+    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.5.42"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
     // Testing
@@ -114,34 +114,9 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:5.1.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.3.1"
     testImplementation "com.jakewharton.timber:timber:5.0.1"
-
-    // Stripe
-    androidTestImplementation "com.stripe:stripe-android:20.5.0"
-
-    // Checkout.com
-    androidTestImplementation 'com.github.checkout:frames-android:3.1.2'
-
-    // Checkout dependency only works with 1.3.0 or 1.4.0 so we peg
-    // it to 1.4.0 so other test related dependencies do not automatically
-    // upgrade it to a later version that breaks the build.
-    androidTestImplementation("com.google.android.material:material") {
-        version {
-            strictly("1.4.0")
-        }
-    }
-
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test:runner:1.5.2"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
-    androidTestImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
-    androidTestImplementation "com.jakewharton.timber:timber:5.0.1"
-
-    androidTestImplementation "com.sudoplatform:sudoprofiles:14.0.0"
-    androidTestImplementation "com.sudoplatform:sudokeymanager:7.0.0"
-    androidTestImplementation 'com.sudoplatform:sudoentitlements:9.0.0'
-    androidTestImplementation 'com.sudoplatform:sudoidentityverification:13.0.0'
+    testImplementation "org.json:json:20240303"
 }
 
 // Returns a list of `configurations` which should not be scanned for vulnerabilities
@@ -187,6 +162,9 @@ afterEvaluate {
             }
         }
     }
+    tasks.named("sourceReleaseJar") {
+        dependsOn("generateServiceApolloSources")
+    }
 }
 
 apply plugin: "com.cookpad.android.plugin.license-tools"
@@ -200,7 +178,7 @@ licenseTools {
 @Grab('org.yaml:snakeyaml:1.17') // Yaml parser
 import org.yaml.snakeyaml.Yaml
 
-task checkLicenseHaveRequiredFields {
+tasks.register("checkLicenseHaveRequiredFields") {
     description = "Check every license entry has the mandatory fields"
     group = "verification"
 
@@ -234,9 +212,21 @@ kotlinter {
     reporters = ['checkstyle', 'plain']
 }
 
+// Exclude the apollographql-generated classes from linting
+tasks.formatKotlinMain {
+    exclude { it.file.path.contains("generated/")}
+}
+
+tasks.lintKotlinMain {
+    exclude { it.file.path.contains("generated/")}
+}
+
 // Apollo Code Generation
+apply plugin: "com.apollographql.apollo3"
 apollo {
-    outputPackageName = "com.sudoplatform.sudovirtualcards.simulator.graphql"
+    service("service") {
+        packageName.set("com.sudoplatform.sudovirtualcards.simulator.graphql")
+    }
 }
 
 // Jacoco test coverage
