@@ -76,7 +76,7 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "10.0.0"
+    private val version: String = "10.0.1"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {
@@ -513,6 +513,8 @@ private fun GraphQLResponse.Error.isAuthenticationFailure(): Boolean {
 }
 private fun Throwable.isAuthenticationFailure(): Boolean {
     var cause: Throwable?
+    val maxDepth = 4
+    var depth = 0
     do {
         val msg = this.message
         if (msg != null && (
@@ -524,7 +526,8 @@ private fun Throwable.isAuthenticationFailure(): Boolean {
             return true
         }
         cause = this.cause
-    } while (cause != null)
+        ++depth
+    } while (cause != null && depth < maxDepth)
 
     return false
 }

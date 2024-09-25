@@ -20,6 +20,7 @@ import com.sudoplatform.sudovirtualcards.simulator.auth.SimulatorCognitoUserPool
 import okhttp3.OkHttpClient
 import org.json.JSONObject
 import java.util.Objects
+import java.util.concurrent.TimeUnit
 
 /**
  * A factory for [GraphQLClient]
@@ -128,14 +129,16 @@ internal class GraphQLClientFactory {
             builder: OkHttpClient.Builder,
         ): OkHttpClient.Builder {
             val interceptor = certificateTransparencyInterceptor {}
-            val httpClientBuilder = builder.apply {
-                // Convert exceptions which are swallowed by the GraphQLOperation error manager
-                // into ones we can detect
-                addInterceptor(ConvertClientErrorsInterceptor())
+            val httpClientBuilder = builder
+                .readTimeout(30L, TimeUnit.SECONDS)
+                .apply {
+                    // Convert exceptions which are swallowed by the GraphQLOperation error manager
+                    // into ones we can detect
+                    addInterceptor(ConvertClientErrorsInterceptor())
 
-                // Certificate transparency checking
-                addNetworkInterceptor(interceptor)
-            }
+                    // Certificate transparency checking
+                    addNetworkInterceptor(interceptor)
+                }
             return httpClientBuilder
         }
     }
