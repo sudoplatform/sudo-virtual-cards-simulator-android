@@ -11,15 +11,15 @@ jacoco {
 }
 
 android {
-    compileSdk 34
+    compileSdkVersion 35
 
     namespace "com.sudoplatform.sudovirtualcards.simulator"
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode = 1
-        versionName = "10.0.0"
+        versionName = "11.0.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testApplicationId = "com.sudoplatform.sudovirtualcards.simulator.test"
         consumerProguardFiles 'consumer-rules.pro'
@@ -77,7 +77,7 @@ android {
 
 dependencies {
     // Kotlin
-    def coroutine_version = '1.8.1'
+    def coroutine_version = '1.10.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${kotlin_version}"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutine_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutine_version"
@@ -90,7 +90,7 @@ dependencies {
     implementation "com.amazonaws:aws-android-sdk-core:$aws_version!!"
     implementation "com.amazonaws:aws-android-sdk-mobile-client:$aws_version!!"
     constraints {
-        implementation("com.google.android.gms:play-services-basement:18.1.0") {
+        implementation("com.google.android.gms:play-services-basement:18.7.1") {
             because("Versions < 18.1.0 have CVE-2022-1799")
         }
     }
@@ -101,12 +101,12 @@ dependencies {
     implementation "com.amplifyframework:aws-auth-cognito:$amplify_version"
 
     // Sudo Platform
-    implementation "com.sudoplatform:sudologging:5.0.0"
-    implementation "com.sudoplatform:sudoconfigmanager:8.0.0"
-    implementation "com.sudoplatform:sudouser:20.0.0"
-    implementation "com.sudoplatform:sudoapiclient:11.1.1"
+    implementation "com.sudoplatform:sudologging:6.0.0"
+    implementation "com.sudoplatform:sudoconfigmanager:9.0.0"
+    implementation "com.sudoplatform:sudouser:21.0.0"
+    implementation "com.sudoplatform:sudoapiclient:12.0.0"
 
-    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.5.42"
+    implementation "com.appmattus.certificatetransparency:certificatetransparency-android:2.8.5"
     implementation "org.jetbrains.kotlin:kotlin-reflect:${kotlin_version}"
 
     // Testing
@@ -114,9 +114,9 @@ dependencies {
     testImplementation "junit:junit:4.13.2"
     testImplementation "io.kotlintest:kotlintest-assertions:$kotlintest_version"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutine_version"
-    testImplementation "org.mockito.kotlin:mockito-kotlin:5.3.1"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:6.0.0"
     testImplementation "com.jakewharton.timber:timber:5.0.1"
-    testImplementation "org.json:json:20240303"
+    testImplementation "org.json:json:20250517"
 }
 
 // Returns a list of `configurations` which should not be scanned for vulnerabilities
@@ -146,15 +146,13 @@ afterEvaluate {
         failBuildOnCVSS 0
         skipConfigurations = getConfigurationsToSkip(configurations)
 
-        cve {
-            urlModified = "https://anonyome-nist-cve-mirror.s3.amazonaws.com/nvdcve-1.1-modified.json.gz"
-            urlBase = "https://anonyome-nist-cve-mirror.s3.amazonaws.com/nvdcve-1.1-%d.json.gz"
-            startYear = 2002
-            waitTime = 0
+        nvd {
+            datafeedUrl = "https://anonyome-nist-cve-mirror.s3.amazonaws.com/"
         }
 
         analyzers {
             assemblyEnabled = false
+            centralEnabled = false
             ossIndex {
                 username = "${ossIndexUsername}"
                 password = "${ossIndexPassword}"
@@ -162,13 +160,9 @@ afterEvaluate {
             }
         }
     }
-    tasks.named("sourceReleaseJar") {
-        dependsOn("generateServiceApolloSources")
-    }
 }
 
 apply plugin: "com.cookpad.android.plugin.license-tools"
-
 licenseTools {
     licensesYaml = file("licenses.yml")
     ignoredGroups = ["com.nhaarman:mockito-kotlin", "com.anonyome", "com.sudoplatform"]
@@ -193,7 +187,7 @@ tasks.register("checkLicenseHaveRequiredFields") {
                     errors.append("License entry '${artifact.artifact}' is missing required element `$field`\n")
                 }
             }
-            if (artifact["license"] == null && artifact["licenseUrl" == null]) {
+            if (artifact["license"] == null && artifact["licenseUrl"] == null) {
                 errors.append("License entry '${artifact.artifact}' must have one of [license,licenseUrl]\n")
             }
         }
@@ -208,21 +202,20 @@ checkLicenses.finalizedBy checkLicenseHaveRequiredFields
 apply plugin: 'org.jmailen.kotlinter'
 
 kotlinter {
-    ignoreFailures = false
     reporters = ['checkstyle', 'plain']
 }
 
 // Exclude the apollographql-generated classes from linting
-tasks.formatKotlinMain {
+tasks.withType(org.jmailen.gradle.kotlinter.tasks.FormatTask) {
     exclude { it.file.path.contains("generated/")}
 }
 
-tasks.lintKotlinMain {
+tasks.withType(org.jmailen.gradle.kotlinter.tasks.LintTask) {
     exclude { it.file.path.contains("generated/")}
 }
 
 // Apollo Code Generation
-apply plugin: "com.apollographql.apollo3"
+apply plugin: "com.apollographql.apollo"
 apollo {
     service("service") {
         packageName.set("com.sudoplatform.sudovirtualcards.simulator.graphql")
@@ -245,6 +238,11 @@ task jacocoTestReport(type: JacocoReport, dependsOn: "testDebugUnitTest") {
     )
     sourceDirectories.setFrom(files("${buildDir.parent}/sudovirtualcardssimulator/src/main/java"))
     executionData.setFrom(fileTree(["dir":"$buildDir", "includes":["**/*.exec", "**/*.ec"]]))
+
+    reports {
+        xml.required = true
+    }
+
 }
 
 // Dokka documentation generation

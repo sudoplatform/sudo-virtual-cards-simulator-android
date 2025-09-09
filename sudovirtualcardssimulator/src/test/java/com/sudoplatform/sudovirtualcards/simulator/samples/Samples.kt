@@ -18,7 +18,6 @@ import org.mockito.kotlin.mock
  */
 @Suppress("UNUSED_VARIABLE")
 class Samples : BaseTests() {
-
     private val context by before { mock<Context>() }
 
     @Test
@@ -26,12 +25,17 @@ class Samples : BaseTests() {
         // Just to keep junit happy
     }
 
-    fun sudoVirtualCardsSimulatorClient(username: String, password: String) {
-        val vcSimulatorClient = SudoVirtualCardsSimulatorClient.builder()
-            .setContext(context)
-            .setUsername(username)
-            .setPassword(password)
-            .build()
+    fun sudoVirtualCardsSimulatorClient(
+        username: String,
+        password: String,
+    ) {
+        val vcSimulatorClient =
+            SudoVirtualCardsSimulatorClient
+                .builder()
+                .setContext(context)
+                .setUsername(username)
+                .setPassword(password)
+                .build()
     }
 
     suspend fun currencyAmount(vcSimulatorClient: SudoVirtualCardsSimulatorClient) {

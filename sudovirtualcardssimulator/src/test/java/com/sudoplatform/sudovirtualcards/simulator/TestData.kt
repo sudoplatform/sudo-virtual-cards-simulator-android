@@ -9,8 +9,8 @@ package com.sudoplatform.sudovirtualcards.simulator
 /**
  * Data used in tests.
  */
+@Suppress("ktlint:standard:property-naming")
 object TestData {
-
     /** Test user that is pre-verified */
     object VerifiedUser {
         const val firstName = "John"

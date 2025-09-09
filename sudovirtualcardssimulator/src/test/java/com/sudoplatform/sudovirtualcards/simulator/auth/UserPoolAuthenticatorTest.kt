@@ -31,7 +31,6 @@ import java.lang.NullPointerException
  * Test the correct operation of the [AWSUserPoolAuthenticator] using mocks and spies.
  */
 class UserPoolAuthenticatorTest : BaseTests() {
-
     private val mockContext by before {
         mock<Context>()
     }
@@ -41,33 +40,42 @@ class UserPoolAuthenticatorTest : BaseTests() {
     private var signInError: Exception? = null
     private var getTokensError: Exception? = null
 
-    private val mockMobileClientAuthenticator = object : MobileClientAuthenticator {
-        override fun initialize(context: Context, configuration: AWSConfiguration, callback: Callback<UserStateDetails>) {
-            if (initializeError != null) {
-                callback.onError(initializeError)
-            } else if (userState != null) {
-                callback.onResult(UserStateDetails(userState, emptyMap()))
-            } else {
-                fail("Missing initialize state")
+    private val mockMobileClientAuthenticator =
+        object : MobileClientAuthenticator {
+            override fun initialize(
+                context: Context,
+                configuration: AWSConfiguration,
+                callback: Callback<UserStateDetails>,
+            ) {
+                if (initializeError != null) {
+                    callback.onError(initializeError)
+                } else if (userState != null) {
+                    callback.onResult(UserStateDetails(userState, emptyMap()))
+                } else {
+                    fail("Missing initialize state")
+                }
             }
-        }
 
-        override fun signIn(username: String, password: String, callback: Callback<SignInResult>) {
-            if (signInError != null) {
-                callback.onError(signInError)
-            } else {
-                callback.onResult(SignInResult.DONE)
+            override fun signIn(
+                username: String,
+                password: String,
+                callback: Callback<SignInResult>,
+            ) {
+                if (signInError != null) {
+                    callback.onError(signInError)
+                } else {
+                    callback.onResult(SignInResult.DONE)
+                }
             }
-        }
 
-        override fun getTokens(callback: Callback<Tokens>) {
-            if (getTokensError != null) {
-                callback.onError(getTokensError)
-            } else {
-                callback.onResult(Tokens("access", "id", "refresh"))
+            override fun getTokens(callback: Callback<Tokens>) {
+                if (getTokensError != null) {
+                    callback.onError(getTokensError)
+                } else {
+                    callback.onResult(Tokens("access", "id", "refresh"))
+                }
             }
         }
-    }
 
     private val configJson = """{ "foo":"bar" }"""
 
@@ -90,66 +98,70 @@ class UserPoolAuthenticatorTest : BaseTests() {
     }
 
     @Test
-    fun `initialize, signIn, getTokens should call aws client`() = runBlocking<Unit> {
-        // given
-        userState = UserState.SIGNED_OUT
-        authenticator.state shouldBe UserPoolAuthenticator.State.UNKNOWN
+    fun `initialize, signIn, getTokens should call aws client`() =
+        runBlocking<Unit> {
+            // given
+            userState = UserState.SIGNED_OUT
+            authenticator.state shouldBe UserPoolAuthenticator.State.UNKNOWN
 
-        // when
-        authenticator.initialize()
-
-        // then
-        authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_OUT
-
-        // when
-        authenticator.signIn("", "")
-
-        // then
-        authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_IN
-
-        // when
-        val tokens = authenticator.getTokens()
-        tokens shouldNotBe null
-        with(tokens!!) {
-            accessToken.tokenString shouldBe "access"
-            idToken.tokenString shouldBe "id"
-            refreshToken.tokenString shouldBe "refresh"
-        }
-
-        // then
-        authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_IN
-    }
-
-    @Test
-    fun `initialize should throw when aws client reports error`() = runBlocking<Unit> {
-        // given
-        initializeError = NullPointerException("Mock")
-
-        // when
-        shouldThrow<NullPointerException> {
+            // when
             authenticator.initialize()
-        }
-    }
 
-    @Test
-    fun `signIn should throw when aws client reports error`() = runBlocking<Unit> {
-        // given
-        signInError = NullPointerException("Mock")
+            // then
+            authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_OUT
 
-        // when
-        shouldThrow<NullPointerException> {
+            // when
             authenticator.signIn("", "")
+
+            // then
+            authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_IN
+
+            // when
+            val tokens = authenticator.getTokens()
+            tokens shouldNotBe null
+            with(tokens!!) {
+                accessToken.tokenString shouldBe "access"
+                idToken.tokenString shouldBe "id"
+                refreshToken.tokenString shouldBe "refresh"
+            }
+
+            // then
+            authenticator.state shouldBe UserPoolAuthenticator.State.SIGNED_IN
         }
-    }
 
     @Test
-    fun `getTokens should throw when aws client reports error`() = runBlocking<Unit> {
-        // given
-        getTokensError = NullPointerException("Mock")
+    fun `initialize should throw when aws client reports error`() =
+        runBlocking<Unit> {
+            // given
+            initializeError = NullPointerException("Mock")
 
-        // when
-        shouldThrow<NullPointerException> {
-            authenticator.getTokens()
+            // when
+            shouldThrow<NullPointerException> {
+                authenticator.initialize()
+            }
         }
-    }
+
+    @Test
+    fun `signIn should throw when aws client reports error`() =
+        runBlocking<Unit> {
+            // given
+            signInError = NullPointerException("Mock")
+
+            // when
+            shouldThrow<NullPointerException> {
+                authenticator.signIn("", "")
+            }
+        }
+
+    @Test
+    fun `getTokens should throw when aws client reports error`() =
+        runBlocking<Unit> {
+            // given
+            getTokensError = NullPointerException("Mock")
+
+            // when
+            shouldThrow<NullPointerException> {
+                authenticator.getTokens()
+            }
+        }
 }

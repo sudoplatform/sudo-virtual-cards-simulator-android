@@ -49,19 +49,19 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
     private val mutationResponse by before {
         JSONObject(
             """
-                {
-                    'simulateIncrementalAuthorization': {
-                        'id':'id',
-                        'approved': true,
-                        'billedAmount': {
-                            'currency': 'currency',
-                            'amount': 10000
-                        },
-                        'declineReason': null,
-                        'createdAtEpochMs': 1.0,
-                        'updatedAtEpochMs': 1.0
-                    }
+            {
+                'simulateIncrementalAuthorization': {
+                    'id':'id',
+                    'approved': true,
+                    'billedAmount': {
+                        'currency': 'currency',
+                        'amount': 10000
+                    },
+                    'declineReason': null,
+                    'createdAtEpochMs': 1.0,
+                    'updatedAtEpochMs': 1.0
                 }
+            }
             """.trimIndent(),
         )
     }
@@ -70,7 +70,8 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
             on {
                 mutate<String>(
                     argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -84,23 +85,26 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
     }
 
-    private val request = SimulateIncrementalAuthorizationInput(
-        "authId",
-        10_000,
-    )
+    private val request =
+        SimulateIncrementalAuthorizationInput(
+            "authId",
+            10_000,
+        )
 
     @After
     fun fini() {
@@ -108,210 +112,224 @@ class SudoVirtualCardsSimulatorIncrementalAuthorizationTest : BaseTests() {
     }
 
     @Test
-    fun `simulateIncrementalAuthorization() should return results when no error present`() = runBlocking<Unit> {
-        val deferredAuthorization = async(Dispatchers.IO) {
-            client.simulateIncrementalAuthorization(request)
-        }
-        deferredAuthorization.start()
-        delay(100L)
+    fun `simulateIncrementalAuthorization() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    client.simulateIncrementalAuthorization(request)
+                }
+            deferredAuthorization.start()
+            delay(100L)
 
-        val authorization = deferredAuthorization.await()
-        authorization shouldNotBe null
+            val authorization = deferredAuthorization.await()
+            authorization shouldNotBe null
 
-        with(authorization) {
-            id shouldBe "id"
-            isApproved shouldBe true
-            amount shouldBe 10_000
-            currency shouldBe "currency"
-            declineReason shouldBe null
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-        }
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateIncrementalAuthorization() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthenticationException> {
-                client.simulateIncrementalAuthorization(request)
+            with(authorization) {
+                id shouldBe "id"
+                isApproved shouldBe true
+                amount shouldBe 10_000
+                currency shouldBe "currency"
+                declineReason shouldBe null
+                createdAt.time shouldBeGreaterThan 0L
+                updatedAt.time shouldBeGreaterThan 0L
             }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-        deferredAuthorization.await()
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateIncrementalAuthorization() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
-                client.simulateIncrementalAuthorization(request)
-            }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `simulateIncrementalAuthorization() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException> {
-                client.simulateIncrementalAuthorization(request)
+    fun `simulateIncrementalAuthorization() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredAuthorization.start()
-        delay(100L)
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthenticationException> {
+                        client.simulateIncrementalAuthorization(request)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+            deferredAuthorization.await()
 
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateIncrementalAuthorization() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.simulateIncrementalAuthorization(request)
-            }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateIncrementalAuthorization() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "Mock"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
 
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
-                client.simulateIncrementalAuthorization(request)
+    @Test
+    fun `simulateIncrementalAuthorization() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
             }
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
+                        client.simulateIncrementalAuthorization(request)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
         }
-        deferredAuthorization.start()
-        delay(100L)
 
-        deferredAuthorization.await()
+    @Test
+    fun `simulateIncrementalAuthorization() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException> {
+                        client.simulateIncrementalAuthorization(request)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateIncrementalAuthorization() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.simulateIncrementalAuthorization(request)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateIncrementalAuthorization() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "Mock"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
+                        client.simulateIncrementalAuthorization(request)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

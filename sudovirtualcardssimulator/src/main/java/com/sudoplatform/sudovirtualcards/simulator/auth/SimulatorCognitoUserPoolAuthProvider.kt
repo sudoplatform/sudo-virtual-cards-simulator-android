@@ -26,7 +26,6 @@ internal class SimulatorCognitoUserPoolAuthProvider(
     @VisibleForTesting
     private val authenticator: UserPoolAuthenticator = createDefaultUserPoolAuthenticator(context, poolId, clientId, region),
 ) : CognitoUserPoolsAuthProvider {
-
     companion object {
         /**
          * Generate an AWS style configuration JSON string.
@@ -35,8 +34,12 @@ internal class SimulatorCognitoUserPoolAuthProvider(
          * @param clientId Client Pool Id to authenticate against
          * @param region Region that the user pool resides in
          */
-        private fun generateConfiguration(poolId: String, clientId: String, region: String) =
-            """{
+        private fun generateConfiguration(
+            poolId: String,
+            clientId: String,
+            region: String,
+        ) = """
+            {
                 "CognitoUserPool": {
                     "Default": {
                         "PoolId": "$poolId",
@@ -52,12 +55,11 @@ internal class SimulatorCognitoUserPoolAuthProvider(
             poolId: String,
             clientId: String,
             region: String,
-        ): UserPoolAuthenticator {
-            return AWSUserPoolAuthenticator(
+        ): UserPoolAuthenticator =
+            AWSUserPoolAuthenticator(
                 context,
                 generateConfiguration(poolId = poolId, clientId = clientId, region = region),
             )
-        }
     }
 
     override fun getLatestAuthToken(): String {
@@ -77,7 +79,5 @@ internal class SimulatorCognitoUserPoolAuthProvider(
         }
     }
 
-    override fun getUsername(): String {
-        return username
-    }
+    override fun getUsername(): String = username
 }

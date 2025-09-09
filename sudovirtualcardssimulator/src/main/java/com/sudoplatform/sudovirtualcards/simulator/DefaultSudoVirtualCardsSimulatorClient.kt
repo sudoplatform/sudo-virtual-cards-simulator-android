@@ -6,7 +6,7 @@
 
 package com.sudoplatform.sudovirtualcards.simulator
 import com.amplifyframework.api.graphql.GraphQLResponse
-import com.apollographql.apollo3.api.Optional
+import com.apollographql.apollo.api.Optional
 import com.sudoplatform.sudologging.AndroidUtilsLogDriver
 import com.sudoplatform.sudologging.LogLevel
 import com.sudoplatform.sudologging.Logger
@@ -67,7 +67,6 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
     private val graphQLClient: GraphQLClient,
     private val logger: Logger = Logger(LogConstants.SUDOLOG_TAG, AndroidUtilsLogDriver(LogLevel.INFO)),
 ) : SudoVirtualCardsSimulatorClient {
-
     /**
      * Checksums for each file are generated and are used to create a checksum that is used when
      * publishing to maven central. In order to retry a failed publish without needing to change any
@@ -76,14 +75,15 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
      * and allow us to retry. The value of `version` doesn't need to be kept up-to-date with the
      * version of the code.
      */
-    private val version: String = "10.0.1"
+    private val version: String = "11.0.0"
 
     override suspend fun getSimulatorMerchants(): List<SimulatorMerchant> {
         try {
-            val queryResponse = graphQLClient.query<ListSimulatorMerchantsQuery, ListSimulatorMerchantsQuery.Data>(
-                ListSimulatorMerchantsQuery.OPERATION_DOCUMENT,
-                emptyMap(),
-            )
+            val queryResponse =
+                graphQLClient.query<ListSimulatorMerchantsQuery, ListSimulatorMerchantsQuery.Data>(
+                    ListSimulatorMerchantsQuery.OPERATION_DOCUMENT,
+                    emptyMap(),
+                )
 
             // Check if there was an error within the server
             if (queryResponse.hasErrors()) {
@@ -112,10 +112,11 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun getSimulatorConversionRates(): List<CurrencyAmount> {
         try {
-            val queryResponse = graphQLClient.query<ListSimulatorConversionRatesQuery, ListSimulatorConversionRatesQuery.Data>(
-                ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT,
-                emptyMap(),
-            )
+            val queryResponse =
+                graphQLClient.query<ListSimulatorConversionRatesQuery, ListSimulatorConversionRatesQuery.Data>(
+                    ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT,
+                    emptyMap(),
+                )
 
             val rateCount = queryResponse.data?.listSimulatorConversionRates?.size ?: 0
             logger.verbose("$rateCount rates returned")
@@ -147,37 +148,41 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateAuthorization(request: SimulateAuthorizationInput): SimulateAuthorizationResponse {
         try {
-            val expiry = ExpiryInput(
-                mm = request.expirationMonth,
-                yyyy = request.expirationYear,
-            )
+            val expiry =
+                ExpiryInput(
+                    mm = request.expirationMonth,
+                    yyyy = request.expirationYear,
+                )
 
             var address: EnteredAddressInput? = null
             if (request.billingAddress != null) {
                 with(request.billingAddress) {
-                    address = EnteredAddressInput(
-                        addressLine1 = Optional.presentIfNotNull(addressLine1),
-                        addressLine2 = Optional.presentIfNotNull(addressLine2),
-                        city = Optional.presentIfNotNull(city),
-                        state = Optional.presentIfNotNull(state),
-                        country = Optional.presentIfNotNull(country),
-                        postalCode = Optional.presentIfNotNull(postalCode),
-                    )
+                    address =
+                        EnteredAddressInput(
+                            addressLine1 = Optional.presentIfNotNull(addressLine1),
+                            addressLine2 = Optional.presentIfNotNull(addressLine2),
+                            city = Optional.presentIfNotNull(city),
+                            state = Optional.presentIfNotNull(state),
+                            country = Optional.presentIfNotNull(country),
+                            postalCode = Optional.presentIfNotNull(postalCode),
+                        )
                 }
             }
-            val mutationInput = SimulateAuthorizationRequest(
-                amount = request.amount,
-                pan = request.cardNumber,
-                merchantId = request.merchantId,
-                csc = Optional.presentIfNotNull(request.securityCode),
-                expiry = expiry,
-                billingAddress = Optional.presentIfNotNull(address),
-            )
+            val mutationInput =
+                SimulateAuthorizationRequest(
+                    amount = request.amount,
+                    pan = request.cardNumber,
+                    merchantId = request.merchantId,
+                    csc = Optional.presentIfNotNull(request.securityCode),
+                    expiry = expiry,
+                    billingAddress = Optional.presentIfNotNull(address),
+                )
 
-            val mutationResponse = graphQLClient.mutate<SimulateAuthorizationMutation, SimulateAuthorizationMutation.Data>(
-                SimulateAuthorizationMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+            val mutationResponse =
+                graphQLClient.mutate<SimulateAuthorizationMutation, SimulateAuthorizationMutation.Data>(
+                    SimulateAuthorizationMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -188,8 +193,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.verbose("approved=${mutationResponse.data?.simulateAuthorization?.approved}")
 
             // Convert the response
-            val authorization = mutationResponse.data?.simulateAuthorization
-                ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
+            val authorization =
+                mutationResponse.data?.simulateAuthorization
+                    ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildAuthorizationFromMutationResult(authorization)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -207,18 +213,20 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateIncrementalAuthorization(request: SimulateIncrementalAuthorizationInput): SimulateAuthorizationResponse {
         try {
-            val mutationInput = SimulateIncrementalAuthorizationRequest(
-                authorizationId = request.authorizationId,
-                amount = request.amount,
-            )
+            val mutationInput =
+                SimulateIncrementalAuthorizationRequest(
+                    authorizationId = request.authorizationId,
+                    amount = request.amount,
+                )
 
-            val mutationResponse = graphQLClient.mutate<
-                SimulateIncrementalAuthorizationMutation,
-                SimulateIncrementalAuthorizationMutation.Data,
+            val mutationResponse =
+                graphQLClient.mutate<
+                    SimulateIncrementalAuthorizationMutation,
+                    SimulateIncrementalAuthorizationMutation.Data,
                 >(
-                SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+                    SimulateIncrementalAuthorizationMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -230,8 +238,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.verbose("approved=$isApproved")
 
             // Convert the response
-            val authorization = mutationResponse.data?.simulateIncrementalAuthorization
-                ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
+            val authorization =
+                mutationResponse.data?.simulateIncrementalAuthorization
+                    ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildAuthorizationFromMutationResult(authorization)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -249,14 +258,16 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateAuthorizationExpiry(authorizationId: String): SimulateAuthorizationExpiryResponse {
         try {
-            val mutationInput = SimulateAuthorizationExpiryRequest(
-                authorizationId = authorizationId,
-            )
+            val mutationInput =
+                SimulateAuthorizationExpiryRequest(
+                    authorizationId = authorizationId,
+                )
 
-            val mutationResponse = graphQLClient.mutate<SimulateAuthorizationExpiryMutation, SimulateAuthorizationExpiryMutation.Data>(
-                SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+            val mutationResponse =
+                graphQLClient.mutate<SimulateAuthorizationExpiryMutation, SimulateAuthorizationExpiryMutation.Data>(
+                    SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -265,8 +276,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             }
 
             // Convert the response
-            val expiry = mutationResponse.data?.simulateAuthorizationExpiry
-                ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
+            val expiry =
+                mutationResponse.data?.simulateAuthorizationExpiry
+                    ?: throw SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildAuthorizationExpiryFromMutationResult(expiry)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -284,15 +296,17 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateDebit(request: SimulateDebitInput): SimulateDebitResponse {
         try {
-            val mutationInput = SimulateDebitRequest(
-                authorizationId = request.authorizationId,
-                amount = request.amount,
-            )
+            val mutationInput =
+                SimulateDebitRequest(
+                    authorizationId = request.authorizationId,
+                    amount = request.amount,
+                )
 
-            val mutationResponse = graphQLClient.mutate<SimulateDebitMutation, SimulateDebitMutation.Data>(
-                SimulateDebitMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+            val mutationResponse =
+                graphQLClient.mutate<SimulateDebitMutation, SimulateDebitMutation.Data>(
+                    SimulateDebitMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -303,8 +317,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.verbose("succeeded")
 
             // Convert the response
-            val debit = mutationResponse.data?.simulateDebit
-                ?: throw SudoVirtualCardsSimulatorClient.DebitException.FailedException(NO_SERVER_RESPONSE)
+            val debit =
+                mutationResponse.data?.simulateDebit
+                    ?: throw SudoVirtualCardsSimulatorClient.DebitException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildDebitFromMutationResult(debit)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -322,15 +337,17 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateRefund(request: SimulateRefundInput): SimulateRefundResponse {
         try {
-            val mutationInput = SimulateRefundRequest(
-                debitId = request.debitId,
-                amount = request.amount,
-            )
+            val mutationInput =
+                SimulateRefundRequest(
+                    debitId = request.debitId,
+                    amount = request.amount,
+                )
 
-            val mutationResponse = graphQLClient.mutate<SimulateRefundMutation, SimulateRefundMutation.Data>(
-                SimulateRefundMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+            val mutationResponse =
+                graphQLClient.mutate<SimulateRefundMutation, SimulateRefundMutation.Data>(
+                    SimulateRefundMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -341,8 +358,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.verbose("succeeded")
 
             // Convert the response
-            val debit = mutationResponse.data?.simulateRefund
-                ?: throw SudoVirtualCardsSimulatorClient.RefundException.FailedException(NO_SERVER_RESPONSE)
+            val debit =
+                mutationResponse.data?.simulateRefund
+                    ?: throw SudoVirtualCardsSimulatorClient.RefundException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildRefundFromMutationResult(debit)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -360,15 +378,17 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
 
     override suspend fun simulateReversal(request: SimulateReversalInput): SimulateReversalResponse {
         try {
-            val mutationInput = SimulateReversalRequest(
-                authorizationId = request.authorizationId,
-                amount = request.amount,
-            )
+            val mutationInput =
+                SimulateReversalRequest(
+                    authorizationId = request.authorizationId,
+                    amount = request.amount,
+                )
 
-            val mutationResponse = graphQLClient.mutate<SimulateReversalMutation, SimulateReversalMutation.Data>(
-                SimulateReversalMutation.OPERATION_DOCUMENT,
-                mapOf("input" to mutationInput),
-            )
+            val mutationResponse =
+                graphQLClient.mutate<SimulateReversalMutation, SimulateReversalMutation.Data>(
+                    SimulateReversalMutation.OPERATION_DOCUMENT,
+                    mapOf("input" to mutationInput),
+                )
 
             // Check if there was an error within the server
             if (mutationResponse.hasErrors()) {
@@ -379,8 +399,9 @@ internal class DefaultSudoVirtualCardsSimulatorClient(
             logger.verbose("succeeded")
 
             // Convert the response
-            val debit = mutationResponse.data?.simulateReversal
-                ?: throw SudoVirtualCardsSimulatorClient.ReversalException.FailedException(NO_SERVER_RESPONSE)
+            val debit =
+                mutationResponse.data?.simulateReversal
+                    ?: throw SudoVirtualCardsSimulatorClient.ReversalException.FailedException(NO_SERVER_RESPONSE)
             return SudoVirtualCardsSimulatorTransformer.buildReversalFromMutationResult(debit)
         } catch (e: Throwable) {
             logger.debug("error $e")
@@ -455,9 +476,11 @@ private fun interpretDebitError(e: GraphQLResponse.Error): SudoVirtualCardsSimul
     ) {
         SudoVirtualCardsSimulatorClient.DebitException.AuthenticationException(e.message)
     } else {
-        val error = e.extensions?.get(
-            GRAPHQL_ERROR_TYPE,
-        )?.toString() ?: ""
+        val error =
+            e.extensions
+                ?.get(
+                    GRAPHQL_ERROR_TYPE,
+                )?.toString() ?: ""
         if (error.contains(ERROR_TRANSACTION_NOT_FOUND)) {
             return SudoVirtualCardsSimulatorClient.DebitException.AuthorizationNotFoundException(AUTHORIZATION_NOT_FOUND)
         }
@@ -473,9 +496,11 @@ private fun interpretRefundError(e: GraphQLResponse.Error): SudoVirtualCardsSimu
     ) {
         SudoVirtualCardsSimulatorClient.RefundException.AuthenticationException(e.message)
     } else {
-        val error = e.extensions?.get(
-            GRAPHQL_ERROR_TYPE,
-        )?.toString() ?: ""
+        val error =
+            e.extensions
+                ?.get(
+                    GRAPHQL_ERROR_TYPE,
+                )?.toString() ?: ""
         if (error.contains(ERROR_TRANSACTION_NOT_FOUND)) {
             return SudoVirtualCardsSimulatorClient.RefundException.DebitNotFoundException("Debit not found")
         } else if (error.contains(ERROR_EXCESSIVE_REFUND)) {
@@ -504,13 +529,13 @@ private fun interpretReversalError(e: GraphQLResponse.Error): SudoVirtualCardsSi
 }
 
 /** Return the message if this is an authentication error, null otherwise */
-private fun GraphQLResponse.Error.isAuthenticationFailure(): Boolean {
-    return (
+private fun GraphQLResponse.Error.isAuthenticationFailure(): Boolean =
+    (
         this.message.contains("Cognito User Pools token") ||
             this.message.contains("Cognito Identity") ||
             this.message.contains("Cognito UserPool")
-        )
-}
+    )
+
 private fun Throwable.isAuthenticationFailure(): Boolean {
     var cause: Throwable?
     val maxDepth = 4
@@ -521,7 +546,7 @@ private fun Throwable.isAuthenticationFailure(): Boolean {
                 msg.contains("Cognito User Pools token") ||
                     msg.contains("Cognito Identity") ||
                     msg.contains("Cognito UserPool")
-                )
+            )
         ) {
             return true
         }

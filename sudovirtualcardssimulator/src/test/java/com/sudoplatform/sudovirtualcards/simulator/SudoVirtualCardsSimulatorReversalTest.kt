@@ -46,21 +46,20 @@ import java.net.HttpURLConnection
  * Test the correct operation of the reversals in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
  */
 class SudoVirtualCardsSimulatorReversalTest : BaseTests() {
-
     private val mutationResponse by before {
         JSONObject(
             """
-                {
-                    'simulateReversal': {
-                        'id':'id',
-                        'billedAmount': {
-                            'currency': 'currency',
-                            'amount': 10000
-                        },
-                        'createdAtEpochMs': 1.0,
-                        'updatedAtEpochMs': 1.0
-                    }
+            {
+                'simulateReversal': {
+                    'id':'id',
+                    'billedAmount': {
+                        'currency': 'currency',
+                        'amount': 10000
+                    },
+                    'createdAtEpochMs': 1.0,
+                    'updatedAtEpochMs': 1.0
                 }
+            }
             """.trimIndent(),
         )
     }
@@ -69,7 +68,8 @@ class SudoVirtualCardsSimulatorReversalTest : BaseTests() {
             on {
                 mutate<String>(
                     argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -83,23 +83,26 @@ class SudoVirtualCardsSimulatorReversalTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
     }
 
-    private val request = SimulateReversalInput(
-        "authId",
-        10_000,
-    )
+    private val request =
+        SimulateReversalInput(
+            "authId",
+            10_000,
+        )
 
     @After
     fun fini() {
@@ -107,206 +110,220 @@ class SudoVirtualCardsSimulatorReversalTest : BaseTests() {
     }
 
     @Test
-    fun `simulateReversal() should return results when no error present`() = runBlocking<Unit> {
-        val deferredResult = async(Dispatchers.IO) {
-            client.simulateReversal(request)
-        }
-        deferredResult.start()
-        delay(100L)
-        val debit = deferredResult.await()
-        debit shouldNotBe null
+    fun `simulateReversal() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    client.simulateReversal(request)
+                }
+            deferredResult.start()
+            delay(100L)
+            val debit = deferredResult.await()
+            debit shouldNotBe null
 
-        with(debit) {
-            id shouldBe "id"
-            amount shouldBe 10_000
-            currency shouldBe "currency"
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-        }
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateReversal() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.AuthenticationException> {
-                client.simulateReversal(request)
+            with(debit) {
+                id shouldBe "id"
+                amount shouldBe 10_000
+                currency shouldBe "currency"
+                createdAt.time shouldBeGreaterThan 0L
+                updatedAt.time shouldBeGreaterThan 0L
             }
-        }
-        deferredResult.start()
-        delay(100L)
-        deferredResult.await()
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateReversal() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.FailedException> {
-                client.simulateReversal(request)
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-
-        deferredResult.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `simulateReversal() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.UnknownException> {
-                client.simulateReversal(request)
+    fun `simulateReversal() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.AuthenticationException> {
+                        client.simulateReversal(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+            deferredResult.await()
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateReversal() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.simulateReversal(request)
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-
-        deferredResult.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateReversal() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "TransactionNotFoundError"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.AuthorizationNotFoundException> {
-                client.simulateReversal(request)
+
+    @Test
+    fun `simulateReversal() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
             }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.FailedException> {
+                        client.simulateReversal(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
         }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
+    @Test
+    fun `simulateReversal() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.UnknownException> {
+                        client.simulateReversal(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateReversal() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.simulateReversal(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateReversal() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "TransactionNotFoundError"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateReversalMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.ReversalException.AuthorizationNotFoundException> {
+                        client.simulateReversal(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateReversalMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

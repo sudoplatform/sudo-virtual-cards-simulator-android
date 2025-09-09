@@ -44,27 +44,26 @@ import java.util.Date
  * Test the correct operation of the merchants in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
  */
 class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
-
     private val queryResponse by before {
         JSONObject(
             """
-                {
-                    'listSimulatorMerchants': [{
-                        'id':'id',
-                        'description': 'description',
-                        'name': 'name',
-                        'mcc': 'mcc',
-                        'city': 'city',
-                        'state': 'state',
-                        'postalCode': 'postcode',
-                        'country': 'country',
-                        'currency': 'currency',
-                        'declineAfterAuthorization': true,
-                        'declineBeforeAuthorization': false,
-                        'createdAtEpochMs': 1.0,
-                        'updatedAtEpochMs': 2.0
-                    }]
-                }
+            {
+                'listSimulatorMerchants': [{
+                    'id':'id',
+                    'description': 'description',
+                    'name': 'name',
+                    'mcc': 'mcc',
+                    'city': 'city',
+                    'state': 'state',
+                    'postalCode': 'postcode',
+                    'country': 'country',
+                    'currency': 'currency',
+                    'declineAfterAuthorization': true,
+                    'declineBeforeAuthorization': false,
+                    'createdAtEpochMs': 1.0,
+                    'updatedAtEpochMs': 2.0
+                }]
+            }
             """.trimIndent(),
         )
     }
@@ -74,7 +73,8 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
             on {
                 query<String>(
                     argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -88,14 +88,16 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
@@ -107,217 +109,231 @@ class SudoVirtualCardsSimulatorMerchantTest : BaseTests() {
     }
 
     @Test
-    fun `getSimulatorMerchants() should return results when no error present`() = runBlocking<Unit> {
-        val deferredMerchants = async(Dispatchers.IO) {
-            client.getSimulatorMerchants()
-        }
-        deferredMerchants.start()
-        delay(100L)
+    fun `getSimulatorMerchants() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    client.getSimulatorMerchants()
+                }
+            deferredMerchants.start()
+            delay(100L)
 
-        val merchants = deferredMerchants.await()
-        merchants.isEmpty() shouldBe false
-        merchants.size shouldBe 1
+            val merchants = deferredMerchants.await()
+            merchants.isEmpty() shouldBe false
+            merchants.size shouldBe 1
 
-        with(merchants[0]) {
-            id shouldBe "id"
-            description shouldBe "description"
-            name shouldBe "name"
-            mcc shouldBe "mcc"
-            city shouldBe "city"
-            state shouldBe "state"
-            postalCode shouldBe "postcode"
-            country shouldBe "country"
-            currency shouldBe "currency"
-            declineAfterAuthorization shouldBe true
-            declineBeforeAuthorization shouldBe false
-            createdAt shouldBe Date(1L)
-            updatedAt shouldBe Date(2L)
-        }
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorMerchants() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-        val deferredMerchants = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.AuthenticationException> {
-                client.getSimulatorMerchants()
+            with(merchants[0]) {
+                id shouldBe "id"
+                description shouldBe "description"
+                name shouldBe "name"
+                mcc shouldBe "mcc"
+                city shouldBe "city"
+                state shouldBe "state"
+                postalCode shouldBe "postcode"
+                country shouldBe "country"
+                currency shouldBe "currency"
+                declineAfterAuthorization shouldBe true
+                declineBeforeAuthorization shouldBe false
+                createdAt shouldBe Date(1L)
+                updatedAt shouldBe Date(2L)
             }
-        }
-        deferredMerchants.start()
-        delay(100L)
 
-        deferredMerchants.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorMerchants() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.query<String>(
-                argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredMerchants = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.FailedException> {
-                client.getSimulatorMerchants()
-            }
-        }
-        deferredMerchants.start()
-        delay(100L)
-
-        deferredMerchants.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `getSimulatorMerchants() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredMerchants = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.UnknownException> {
-                client.getSimulatorMerchants()
+    fun `getSimulatorMerchants() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredMerchants.start()
-        delay(100L)
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.AuthenticationException> {
+                        client.getSimulatorMerchants()
+                    }
+                }
+            deferredMerchants.start()
+            delay(100L)
 
-        deferredMerchants.await()
+            deferredMerchants.await()
 
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorMerchants() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-
-        val deferredMerchants = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.getSimulatorMerchants()
-            }
-        }
-        deferredMerchants.start()
-        delay(100L)
-
-        deferredMerchants.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorMerchants() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "Mock"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.query<String>(
-                argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredMerchants = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.FailedException> {
-                client.getSimulatorMerchants()
+
+    @Test
+    fun `getSimulatorMerchants() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.query<String>(
+                    argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
             }
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.FailedException> {
+                        client.getSimulatorMerchants()
+                    }
+                }
+            deferredMerchants.start()
+            delay(100L)
+
+            deferredMerchants.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
         }
-        deferredMerchants.start()
-        delay(100L)
 
-        deferredMerchants.await()
+    @Test
+    fun `getSimulatorMerchants() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
 
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.UnknownException> {
+                        client.getSimulatorMerchants()
+                    }
+                }
+            deferredMerchants.start()
+            delay(100L)
+
+            deferredMerchants.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `getSimulatorMerchants() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.getSimulatorMerchants()
+                    }
+                }
+            deferredMerchants.start()
+            delay(100L)
+
+            deferredMerchants.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `getSimulatorMerchants() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "Mock"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.query<String>(
+                    argThat { this.query.equals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredMerchants =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorMerchantsException.FailedException> {
+                        client.getSimulatorMerchants()
+                    }
+                }
+            deferredMerchants.start()
+            delay(100L)
+
+            deferredMerchants.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorMerchantsQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

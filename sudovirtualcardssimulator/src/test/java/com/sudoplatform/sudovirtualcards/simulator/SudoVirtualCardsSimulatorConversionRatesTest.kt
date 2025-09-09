@@ -43,19 +43,18 @@ import java.net.HttpURLConnection
  * Test the correct operation of the currency conversion rates in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
  */
 class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
-
     private val queryResponse by before {
         JSONObject(
             """
-                {
-                    'listSimulatorConversionRates': [{
-                        'currency': 'AUD',
-                        'amount': 100000
-                    }, {
-                        'currency': 'USD',
-                        'amount': 67294
-                    }]
-                }
+            {
+                'listSimulatorConversionRates': [{
+                    'currency': 'AUD',
+                    'amount': 100000
+                }, {
+                    'currency': 'USD',
+                    'amount': 67294
+                }]
+            }
             """.trimIndent(),
         )
     }
@@ -64,7 +63,8 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
             on {
                 query<String>(
                     argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -78,14 +78,16 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
@@ -97,206 +99,220 @@ class SudoVirtualCardsSimulatorConversionRatesTest : BaseTests() {
     }
 
     @Test
-    fun `getSimulatorConversionRates() should return results when no error present`() = runBlocking<Unit> {
-        val deferredResult = async(Dispatchers.IO) {
-            client.getSimulatorConversionRates()
-        }
-        deferredResult.start()
-        delay(100L)
+    fun `getSimulatorConversionRates() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    client.getSimulatorConversionRates()
+                }
+            deferredResult.start()
+            delay(100L)
 
-        val currencies = deferredResult.await()
-        currencies.isEmpty() shouldBe false
-        currencies.size shouldBe 2
+            val currencies = deferredResult.await()
+            currencies.isEmpty() shouldBe false
+            currencies.size shouldBe 2
 
-        with(currencies[0]) {
-            currency shouldBe "AUD"
-            amount shouldBe 100_000
-        }
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorConversionRates() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.AuthenticationException> {
-                client.getSimulatorConversionRates()
+            with(currencies[0]) {
+                currency shouldBe "AUD"
+                amount shouldBe 100_000
             }
-        }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorConversionRates() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.query<String>(
-                argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.FailedException> {
-                client.getSimulatorConversionRates()
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-
-        deferredResult.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `getSimulatorConversionRates() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.UnknownException> {
-                client.getSimulatorConversionRates()
+    fun `getSimulatorConversionRates() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredResult.start()
-        delay(100L)
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.AuthenticationException> {
+                        client.getSimulatorConversionRates()
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
 
-        deferredResult.await()
+            deferredResult.await()
 
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorConversionRates() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                query<String>(
-                    argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.getSimulatorConversionRates()
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-
-        deferredResult.await()
-
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `getSimulatorConversionRates() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "TransactionNotFoundError"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.query<String>(
-                argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.FailedException> {
-                client.getSimulatorConversionRates()
+
+    @Test
+    fun `getSimulatorConversionRates() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.query<String>(
+                    argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
             }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.FailedException> {
+                        client.getSimulatorConversionRates()
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
         }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
+    @Test
+    fun `getSimulatorConversionRates() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
 
-        verify(mockApiCategory).query<String>(
-            check {
-                assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.UnknownException> {
+                        client.getSimulatorConversionRates()
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `getSimulatorConversionRates() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    query<String>(
+                        argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.getSimulatorConversionRates()
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `getSimulatorConversionRates() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "TransactionNotFoundError"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.query<String>(
+                    argThat { this.query.equals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.GetSimulatorConversionRatesException.FailedException> {
+                        client.getSimulatorConversionRates()
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).query<String>(
+                check {
+                    assertEquals(ListSimulatorConversionRatesQuery.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

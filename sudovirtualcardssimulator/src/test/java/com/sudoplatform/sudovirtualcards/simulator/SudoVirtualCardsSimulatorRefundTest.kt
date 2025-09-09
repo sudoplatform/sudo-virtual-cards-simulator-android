@@ -46,21 +46,20 @@ import java.net.HttpURLConnection
  * Test the correct operation of the refunds in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
  */
 class SudoVirtualCardsSimulatorRefundTest : BaseTests() {
-
     private val mutationResponse by before {
         JSONObject(
             """
-                {
-                    'simulateRefund': {
-                        'id':'id',
-                        'billedAmount': {
-                            'currency': 'currency',
-                            'amount': 10000
-                        },
-                        'createdAtEpochMs': 1.0,
-                        'updatedAtEpochMs': 1.0
-                    }
+            {
+                'simulateRefund': {
+                    'id':'id',
+                    'billedAmount': {
+                        'currency': 'currency',
+                        'amount': 10000
+                    },
+                    'createdAtEpochMs': 1.0,
+                    'updatedAtEpochMs': 1.0
                 }
+            }
             """.trimIndent(),
         )
     }
@@ -69,7 +68,8 @@ class SudoVirtualCardsSimulatorRefundTest : BaseTests() {
             on {
                 mutate<String>(
                     argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -83,23 +83,26 @@ class SudoVirtualCardsSimulatorRefundTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
     }
 
-    private val request = SimulateRefundInput(
-        "debitId",
-        10_000,
-    )
+    private val request =
+        SimulateRefundInput(
+            "debitId",
+            10_000,
+        )
 
     @After
     fun fini() {
@@ -107,208 +110,222 @@ class SudoVirtualCardsSimulatorRefundTest : BaseTests() {
     }
 
     @Test
-    fun `simulateRefund() should return results when no error present`() = runBlocking<Unit> {
-        val deferredResult = async(Dispatchers.IO) {
-            client.simulateRefund(request)
-        }
-        deferredResult.start()
-        delay(100L)
+    fun `simulateRefund() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    client.simulateRefund(request)
+                }
+            deferredResult.start()
+            delay(100L)
 
-        val debit = deferredResult.await()
-        debit shouldNotBe null
+            val debit = deferredResult.await()
+            debit shouldNotBe null
 
-        with(debit) {
-            id shouldBe "id"
-            amount shouldBe 10_000
-            currency shouldBe "currency"
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-        }
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateRefund() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.AuthenticationException> {
-                client.simulateRefund(request)
+            with(debit) {
+                id shouldBe "id"
+                amount shouldBe 10_000
+                currency shouldBe "currency"
+                createdAt.time shouldBeGreaterThan 0L
+                updatedAt.time shouldBeGreaterThan 0L
             }
-        }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateRefund() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.FailedException> {
-                client.simulateRefund(request)
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-        deferredResult.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `simulateRefund() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.UnknownException> {
-                client.simulateRefund(request)
+    fun `simulateRefund() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.AuthenticationException> {
+                        client.simulateRefund(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            deferredResult.await()
 
-    @Test
-    fun `simulateRefund() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.simulateRefund(request)
-            }
-        }
-        deferredResult.start()
-        delay(100L)
-
-        deferredResult.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateRefund() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "TransactionNotFoundError"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredResult = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.DebitNotFoundException> {
-                client.simulateRefund(request)
+
+    @Test
+    fun `simulateRefund() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
             }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.FailedException> {
+                        client.simulateRefund(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
         }
-        deferredResult.start()
-        delay(100L)
 
-        deferredResult.await()
+    @Test
+    fun `simulateRefund() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.UnknownException> {
+                        client.simulateRefund(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateRefund() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.simulateRefund(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateRefund() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "TransactionNotFoundError"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateRefundMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredResult =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.RefundException.DebitNotFoundException> {
+                        client.simulateRefund(request)
+                    }
+                }
+            deferredResult.start()
+            delay(100L)
+
+            deferredResult.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateRefundMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

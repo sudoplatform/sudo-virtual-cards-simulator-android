@@ -45,17 +45,16 @@ import java.net.HttpURLConnection
  * Test the correct operation of the authorization expiry in [DefaultSudoVirtualCardsSimulatorClient] using mocks and spies.
  */
 class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
-
     private val mutationResponse by before {
         JSONObject(
             """
-                {
-                    'simulateAuthorizationExpiry': {
-                        'id':'id',
-                        'createdAtEpochMs': 1.0,
-                        'updatedAtEpochMs': 1.0
-                    }
+            {
+                'simulateAuthorizationExpiry': {
+                    'id':'id',
+                    'createdAtEpochMs': 1.0,
+                    'updatedAtEpochMs': 1.0
                 }
+            }
             """.trimIndent(),
         )
     }
@@ -64,7 +63,8 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
             on {
                 mutate<String>(
                     argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
-                    any(), any(),
+                    any(),
+                    any(),
                 )
             } doAnswer {
                 val mockOperation: GraphQLOperation<String> = mock()
@@ -78,14 +78,16 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
     }
 
     private val mockLogger by before {
-        val mockLogDriver = mock<LogDriverInterface>().stub {
-            on { logLevel } doReturn LogLevel.NONE
-        }
+        val mockLogDriver =
+            mock<LogDriverInterface>().stub {
+                on { logLevel } doReturn LogLevel.NONE
+            }
         Logger("mock", mockLogDriver)
     }
 
     private val client by before {
-        SudoVirtualCardsSimulatorClient.builder()
+        SudoVirtualCardsSimulatorClient
+            .builder()
             .setGraphQLClient(GraphQLClient(mockApiCategory))
             .setLogger(mockLogger)
             .build()
@@ -99,205 +101,219 @@ class SudoVirtualCardsSimulatorAuthorizationExpiryTest : BaseTests() {
     }
 
     @Test
-    fun `simulateAuthorizationExpiry() should return results when no error present`() = runBlocking<Unit> {
-        val deferredAuthorization = async(Dispatchers.IO) {
-            client.simulateAuthorizationExpiry(authorizationId)
-        }
-        deferredAuthorization.start()
-        delay(100L)
+    fun `simulateAuthorizationExpiry() should return results when no error present`() =
+        runBlocking<Unit> {
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    client.simulateAuthorizationExpiry(authorizationId)
+                }
+            deferredAuthorization.start()
+            delay(100L)
 
-        val authorization = deferredAuthorization.await()
-        authorization shouldNotBe null
+            val authorization = deferredAuthorization.await()
+            authorization shouldNotBe null
 
-        with(authorization) {
-            id shouldBe "id"
-            createdAt.time shouldBeGreaterThan 0L
-            updatedAt.time shouldBeGreaterThan 0L
-        }
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateAuthorizationExpiry() should throw when authentication fails`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Cognito UserPool failure")
-        }
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthenticationException> {
-                client.simulateAuthorizationExpiry(authorizationId)
+            with(authorization) {
+                id shouldBe "id"
+                createdAt.time shouldBeGreaterThan 0L
+                updatedAt.time shouldBeGreaterThan 0L
             }
-        }
-        deferredAuthorization.start()
-        delay(100L)
 
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateAuthorizationExpiry() should throw when http error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
-                client.simulateAuthorizationExpiry(authorizationId)
-            }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
 
     @Test
-    fun `simulateAuthorizationExpiry() should throw when random error occurs`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow RuntimeException("Mock")
-        }
-
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException> {
-                client.simulateAuthorizationExpiry(authorizationId)
+    fun `simulateAuthorizationExpiry() should throw when authentication fails`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Cognito UserPool failure")
             }
-        }
-        deferredAuthorization.start()
-        delay(100L)
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.AuthenticationException> {
+                        client.simulateAuthorizationExpiry(authorizationId)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
 
-        deferredAuthorization.await()
+            deferredAuthorization.await()
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateAuthorizationExpiry() should not suppress CancellationException`() = runBlocking<Unit> {
-        mockApiCategory.stub {
-            on {
-                mutate<String>(
-                    argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
-                    any(),
-                    any(),
-                )
-            } doThrow CancellationException("Mock")
-        }
-
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<CancellationException> {
-                client.simulateAuthorizationExpiry(authorizationId)
-            }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-
-        deferredAuthorization.await()
-
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
-
-    @Test
-    fun `simulateAuthorizationExpiry() should throw when backend error occurs`() = runBlocking<Unit> {
-        val errors = listOf(
-            GraphQLResponse.Error(
-                "mock",
-                null,
-                null,
-                mapOf("errorType" to "Mock"),
-            ),
-        )
-        val mockOperation: GraphQLOperation<String> = mock()
-        whenever(
-            mockApiCategory.mutate<String>(
-                argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
                 any(),
                 any(),
-            ),
-        ).thenAnswer {
-            @Suppress("UNCHECKED_CAST")
-            (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
-                GraphQLResponse(null, errors),
             )
-            mockOperation
         }
-        val deferredAuthorization = async(Dispatchers.IO) {
-            shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
-                client.simulateAuthorizationExpiry(authorizationId)
-            }
-        }
-        deferredAuthorization.start()
-        delay(100L)
-        deferredAuthorization.await()
 
-        verify(mockApiCategory).mutate<String>(
-            check {
-                assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
-            },
-            any(),
-            any(),
-        )
-    }
+    @Test
+    fun `simulateAuthorizationExpiry() should throw when http error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("httpStatus" to HttpURLConnection.HTTP_INTERNAL_ERROR),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
+                        client.simulateAuthorizationExpiry(authorizationId)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateAuthorizationExpiry() should throw when random error occurs`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow RuntimeException("Mock")
+            }
+
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.UnknownException> {
+                        client.simulateAuthorizationExpiry(authorizationId)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateAuthorizationExpiry() should not suppress CancellationException`() =
+        runBlocking<Unit> {
+            mockApiCategory.stub {
+                on {
+                    mutate<String>(
+                        argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+                        any(),
+                        any(),
+                    )
+                } doThrow CancellationException("Mock")
+            }
+
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<CancellationException> {
+                        client.simulateAuthorizationExpiry(authorizationId)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
+
+    @Test
+    fun `simulateAuthorizationExpiry() should throw when backend error occurs`() =
+        runBlocking<Unit> {
+            val errors =
+                listOf(
+                    GraphQLResponse.Error(
+                        "mock",
+                        null,
+                        null,
+                        mapOf("errorType" to "Mock"),
+                    ),
+                )
+            val mockOperation: GraphQLOperation<String> = mock()
+            whenever(
+                mockApiCategory.mutate<String>(
+                    argThat { this.query.equals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT) },
+                    any(),
+                    any(),
+                ),
+            ).thenAnswer {
+                @Suppress("UNCHECKED_CAST")
+                (it.arguments[1] as Consumer<GraphQLResponse<String>>).accept(
+                    GraphQLResponse(null, errors),
+                )
+                mockOperation
+            }
+            val deferredAuthorization =
+                async(Dispatchers.IO) {
+                    shouldThrow<SudoVirtualCardsSimulatorClient.AuthorizationException.FailedException> {
+                        client.simulateAuthorizationExpiry(authorizationId)
+                    }
+                }
+            deferredAuthorization.start()
+            delay(100L)
+            deferredAuthorization.await()
+
+            verify(mockApiCategory).mutate<String>(
+                check {
+                    assertEquals(SimulateAuthorizationExpiryMutation.OPERATION_DOCUMENT, it.query)
+                },
+                any(),
+                any(),
+            )
+        }
 }

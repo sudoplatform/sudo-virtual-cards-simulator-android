@@ -27,7 +27,6 @@ import java.lang.IllegalStateException
  * Test the correct operation of the [SimulatorCognitoUserPoolAuthProvider] using mocks and spies.
  */
 class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
-
     private val mockContext by before {
         mock<Context>()
     }
@@ -64,58 +63,64 @@ class SimulatorCognitoUserPoolAuthProviderTest : BaseTests() {
     }
 
     @Test
-    fun `should succeed if able to authenticate`() = runBlocking<Unit> {
-        mockUserPoolAuthenticator.stub {
-            on { state } doReturnConsecutively listOf(
-                UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_IN,
-            )
+    fun `should succeed if able to authenticate`() =
+        runBlocking<Unit> {
+            mockUserPoolAuthenticator.stub {
+                on { state } doReturnConsecutively
+                    listOf(
+                        UserPoolAuthenticator.State.UNKNOWN,
+                        UserPoolAuthenticator.State.SIGNED_IN,
+                    )
+            }
+
+            authProvider.latestAuthToken
+
+            verify(mockUserPoolAuthenticator, times(2)).state
+            verify(mockUserPoolAuthenticator).initialize()
+            verify(mockUserPoolAuthenticator).signIn("username", "password")
+            verify(mockUserPoolAuthenticator).getTokens()
+            verify(mockTokens).accessToken
         }
-
-        authProvider.latestAuthToken
-
-        verify(mockUserPoolAuthenticator, times(2)).state
-        verify(mockUserPoolAuthenticator).initialize()
-        verify(mockUserPoolAuthenticator).signIn("username", "password")
-        verify(mockUserPoolAuthenticator).getTokens()
-        verify(mockTokens).accessToken
-    }
 
     @Test
-    fun `should throw if unable to authenticate`() = runBlocking<Unit> {
-        mockUserPoolAuthenticator.stub {
-            on { state } doReturnConsecutively listOf(
-                UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_OUT,
-            )
-        }
+    fun `should throw if unable to authenticate`() =
+        runBlocking<Unit> {
+            mockUserPoolAuthenticator.stub {
+                on { state } doReturnConsecutively
+                    listOf(
+                        UserPoolAuthenticator.State.UNKNOWN,
+                        UserPoolAuthenticator.State.SIGNED_OUT,
+                    )
+            }
 
-        shouldThrow<IllegalStateException> {
-            authProvider.latestAuthToken
-        }
+            shouldThrow<IllegalStateException> {
+                authProvider.latestAuthToken
+            }
 
-        verify(mockUserPoolAuthenticator, times(2)).state
-        verify(mockUserPoolAuthenticator).initialize()
-        verify(mockUserPoolAuthenticator).signIn("username", "password")
-    }
+            verify(mockUserPoolAuthenticator, times(2)).state
+            verify(mockUserPoolAuthenticator).initialize()
+            verify(mockUserPoolAuthenticator).signIn("username", "password")
+        }
 
     @Test
-    fun `should throw if tokens not returned`() = runBlocking<Unit> {
-        mockUserPoolAuthenticator.stub {
-            on { state } doReturnConsecutively listOf(
-                UserPoolAuthenticator.State.UNKNOWN,
-                UserPoolAuthenticator.State.SIGNED_IN,
-            )
-            onBlocking { getTokens() } doReturn null
-        }
+    fun `should throw if tokens not returned`() =
+        runBlocking<Unit> {
+            mockUserPoolAuthenticator.stub {
+                on { state } doReturnConsecutively
+                    listOf(
+                        UserPoolAuthenticator.State.UNKNOWN,
+                        UserPoolAuthenticator.State.SIGNED_IN,
+                    )
+                onBlocking { getTokens() } doReturn null
+            }
 
-        shouldThrow<IllegalStateException> {
-            authProvider.latestAuthToken
-        }
+            shouldThrow<IllegalStateException> {
+                authProvider.latestAuthToken
+            }
 
-        verify(mockUserPoolAuthenticator, times(2)).state
-        verify(mockUserPoolAuthenticator).initialize()
-        verify(mockUserPoolAuthenticator).signIn("username", "password")
-        verify(mockUserPoolAuthenticator).getTokens()
-    }
+            verify(mockUserPoolAuthenticator, times(2)).state
+            verify(mockUserPoolAuthenticator).initialize()
+            verify(mockUserPoolAuthenticator).signIn("username", "password")
+            verify(mockUserPoolAuthenticator).getTokens()
+        }
 }

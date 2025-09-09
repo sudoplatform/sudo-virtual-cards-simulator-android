@@ -35,7 +35,6 @@ import com.sudoplatform.sudovirtualcards.simulator.types.outputs.SimulatorMercha
  * @sample com.sudoplatform.sudovirtualcards.simulator.samples.Samples.sudoVirtualCardsSimulatorClient
  */
 interface SudoVirtualCardsSimulatorClient {
-
     companion object {
         /** Create a [Builder] for [SudoVirtualCardsSimulatorClient]. */
         @JvmStatic
@@ -56,33 +55,37 @@ interface SudoVirtualCardsSimulatorClient {
         /**
          * Provide the application context (required input).
          */
-        fun setContext(context: Context) = also {
-            it.context = context
-        }
+        fun setContext(context: Context) =
+            also {
+                it.context = context
+            }
 
         /**
          * Provide the username to authenticate with the simulator.
          * This is required input if you are not supplying your own [GraphQLClient].
          */
-        fun setUsername(username: String) = also {
-            it.username = username
-        }
+        fun setUsername(username: String) =
+            also {
+                it.username = username
+            }
 
         /**
          * Provide the password to authenticate with the simulator.
          * This is required input if you are not supplying your own [GraphQLClient].
          */
-        fun setPassword(password: String) = also {
-            it.password = password
-        }
+        fun setPassword(password: String) =
+            also {
+                it.password = password
+            }
 
         /**
          * Provide the API key to authenticate with the simulator.
          * This is required input if you are not supplying your own [GraphQLClient].
          */
-        fun setApiKey(apiKey: String) = also {
-            it.apiKey = apiKey
-        }
+        fun setApiKey(apiKey: String) =
+            also {
+                it.apiKey = apiKey
+            }
 
         /**
          * Provide an [GraphQLClient] for the [SudoVirtualCardsSimulatorClient] to use
@@ -90,17 +93,19 @@ interface SudoVirtualCardsSimulatorClient {
          * be constructed and used. If you provide the [GraphQLClient] via this method
          * you do not need to provide the [context], [username] and [password].
          */
-        fun setGraphQLClient(client: GraphQLClient) = also {
-            it.graphQLClient = client
-        }
+        fun setGraphQLClient(client: GraphQLClient) =
+            also {
+                it.graphQLClient = client
+            }
 
         /**
          * Provide the implementation of the [Logger] used for logging errors (optional input).
          * If a value is not supplied a default implementation will be used.
          */
-        fun setLogger(logger: Logger) = also {
-            this.logger = logger
-        }
+        fun setLogger(logger: Logger) =
+            also {
+                this.logger = logger
+            }
 
         /**
          * Construct the [SudoVirtualCardsSimulatorClient]. Will throw a [NullPointerException] if
@@ -118,13 +123,23 @@ interface SudoVirtualCardsSimulatorClient {
     }
 
     /** Exceptions thrown by [getSimulatorMerchants] */
-    sealed class GetSimulatorMerchantsException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            GetSimulatorMerchantsException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            GetSimulatorMerchantsException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            GetSimulatorMerchantsException(cause = cause)
+    sealed class GetSimulatorMerchantsException(
+        message: String? = null,
+        cause: Throwable? = null,
+    ) : RuntimeException(message, cause) {
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : GetSimulatorMerchantsException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : GetSimulatorMerchantsException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : GetSimulatorMerchantsException(cause = cause)
     }
 
     /** Exceptions thrown by [getSimulatorConversionRates] */
@@ -132,68 +147,139 @@ interface SudoVirtualCardsSimulatorClient {
         message: String? = null,
         cause: Throwable? = null,
     ) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            GetSimulatorConversionRatesException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            GetSimulatorConversionRatesException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            GetSimulatorConversionRatesException(cause = cause)
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : GetSimulatorConversionRatesException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : GetSimulatorConversionRatesException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : GetSimulatorConversionRatesException(cause = cause)
     }
 
     /** Exceptions thrown by [simulateAuthorization] and [simulateIncrementalAuthorization] */
-    sealed class AuthorizationException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            AuthorizationException(message = message, cause = cause)
-        class CardNotFoundException(message: String? = null, cause: Throwable? = null) :
-            AuthorizationException(message = message, cause = cause)
-        class AuthorizationNotFoundException(message: String? = null, cause: Throwable? = null) :
-            AuthorizationException(message = message, cause = cause)
-        class AuthorizationExpiredException(message: String? = null, cause: Throwable? = null) :
-            AuthorizationException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            AuthorizationException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            AuthorizationException(cause = cause)
+    sealed class AuthorizationException(
+        message: String? = null,
+        cause: Throwable? = null,
+    ) : RuntimeException(message, cause) {
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : AuthorizationException(message = message, cause = cause)
+
+        class CardNotFoundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : AuthorizationException(message = message, cause = cause)
+
+        class AuthorizationNotFoundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : AuthorizationException(message = message, cause = cause)
+
+        class AuthorizationExpiredException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : AuthorizationException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : AuthorizationException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : AuthorizationException(cause = cause)
     }
 
     /** Exceptions thrown by [simulateDebit] */
-    sealed class DebitException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            DebitException(message = message, cause = cause)
-        class AuthorizationNotFoundException(message: String? = null, cause: Throwable? = null) :
-            DebitException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            DebitException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            DebitException(cause = cause)
+    sealed class DebitException(
+        message: String? = null,
+        cause: Throwable? = null,
+    ) : RuntimeException(message, cause) {
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : DebitException(message = message, cause = cause)
+
+        class AuthorizationNotFoundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : DebitException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : DebitException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : DebitException(cause = cause)
     }
 
     /** Exceptions thrown by [simulateRefund] */
-    sealed class RefundException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            RefundException(message = message, cause = cause)
-        class DebitNotFoundException(message: String? = null, cause: Throwable? = null) :
-            RefundException(message = message, cause = cause)
-        class ExcessiveRefundException(message: String? = null, cause: Throwable? = null) :
-            RefundException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            RefundException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            RefundException(cause = cause)
+    sealed class RefundException(
+        message: String? = null,
+        cause: Throwable? = null,
+    ) : RuntimeException(message, cause) {
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : RefundException(message = message, cause = cause)
+
+        class DebitNotFoundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : RefundException(message = message, cause = cause)
+
+        class ExcessiveRefundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : RefundException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : RefundException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : RefundException(cause = cause)
     }
 
     /** Exceptions thrown by [simulateReversal] */
-    sealed class ReversalException(message: String? = null, cause: Throwable? = null) : RuntimeException(message, cause) {
-        class AuthenticationException(message: String? = null, cause: Throwable? = null) :
-            ReversalException(message = message, cause = cause)
-        class AuthorizationNotFoundException(message: String? = null, cause: Throwable? = null) :
-            ReversalException(message = message, cause = cause)
-        class ExcessiveReversalException(message: String? = null, cause: Throwable? = null) :
-            ReversalException(message = message, cause = cause)
-        class FailedException(message: String? = null, cause: Throwable? = null) :
-            ReversalException(message = message, cause = cause)
-        class UnknownException(cause: Throwable) :
-            ReversalException(cause = cause)
+    sealed class ReversalException(
+        message: String? = null,
+        cause: Throwable? = null,
+    ) : RuntimeException(message, cause) {
+        class AuthenticationException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : ReversalException(message = message, cause = cause)
+
+        class AuthorizationNotFoundException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : ReversalException(message = message, cause = cause)
+
+        class ExcessiveReversalException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : ReversalException(message = message, cause = cause)
+
+        class FailedException(
+            message: String? = null,
+            cause: Throwable? = null,
+        ) : ReversalException(message = message, cause = cause)
+
+        class UnknownException(
+            cause: Throwable,
+        ) : ReversalException(cause = cause)
     }
 
     /**

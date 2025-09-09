@@ -26,9 +26,7 @@ import java.util.concurrent.TimeUnit
  * A factory for [GraphQLClient]
  */
 internal class GraphQLClientFactory {
-
     companion object {
-
         /**
          * Create a [GraphQLClient] by loading configuration and setting up the required
          * authentication provider.
@@ -36,7 +34,12 @@ internal class GraphQLClientFactory {
          * @throws [NullPointerException] if the required arguments or configuration information is missing.
          */
         @Throws(NullPointerException::class)
-        fun getGraphQLClient(context: Context?, username: String?, password: String?, apiKey: String?): GraphQLClient {
+        fun getGraphQLClient(
+            context: Context?,
+            username: String?,
+            password: String?,
+            apiKey: String?,
+        ): GraphQLClient {
             Objects.requireNonNull(context, "Context must be provided.")
 
             if (username == null && password == null) {
@@ -62,53 +65,56 @@ internal class GraphQLClientFactory {
             var authorization = ""
             if (username != null && password != null) {
                 authorization = "'authorizationType': 'AMAZON_COGNITO_USER_POOLS'"
-                val authProvider = SimulatorCognitoUserPoolAuthProvider(
-                    context = context,
-                    poolId = poolId!!,
-                    clientId = clientId!!,
-                    region = region!!,
-                    username = username,
-                    password = password,
-                )
+                val authProvider =
+                    SimulatorCognitoUserPoolAuthProvider(
+                        context = context,
+                        poolId = poolId!!,
+                        clientId = clientId!!,
+                        region = region!!,
+                        username = username,
+                        password = password,
+                    )
                 authProviders = ApiAuthProviders.builder().cognitoUserPoolsAuthProvider(authProvider).build()
             }
             if ((apiKey != null)) {
                 authorization = "'authorizationType': 'API_KEY', 'apiKey': '$apiKey'"
             }
-            val graphqlConfig = JSONObject(
-                """
-                {
-                    'plugins': {
-                        'awsAPIPlugin': {
-                            'Simulator': {
-                                'endpointType': 'GraphQL',
-                                'endpoint': '$apiUrl',
-                                'region': '${Regions.fromName(region)}',
-                                $authorization
-                            }
-                        },
-                        'awsCognitoAuthPlugin': {
-                            'CognitoUserPool': {
-                                'Default': {
-                                    'PoolId': '$poolId',
-                                    'AppClientId': '$clientId',
-                                    "Region": "'${Regions.fromName(region)}'"
+            val graphqlConfig =
+                JSONObject(
+                    """
+                    {
+                        'plugins': {
+                            'awsAPIPlugin': {
+                                'Simulator': {
+                                    'endpointType': 'GraphQL',
+                                    'endpoint': '$apiUrl',
+                                    'region': '${Regions.fromName(region)}',
+                                    $authorization
+                                }
+                            },
+                            'awsCognitoAuthPlugin': {
+                                'CognitoUserPool': {
+                                    'Default': {
+                                        'PoolId': '$poolId',
+                                        'AppClientId': '$clientId',
+                                        "Region": "'${Regions.fromName(region)}'"
+                                    }
                                 }
                             }
                         }
                     }
-                }
-                """.trimIndent(),
-            )
+                    """.trimIndent(),
+                )
 
             val apiCategoryConfiguration = ApiCategoryConfiguration()
             apiCategoryConfiguration.populateFromJSON(graphqlConfig)
             val apiCategory = ApiCategory()
-            val pluginBuilder = AWSApiPlugin
-                .builder()
-                .configureClient(
-                    "Simulator",
-                ) { builder -> this.buildOkHttpClient(builder) }
+            val pluginBuilder =
+                AWSApiPlugin
+                    .builder()
+                    .configureClient(
+                        "Simulator",
+                    ) { builder -> this.buildOkHttpClient(builder) }
             if (authProviders != null) {
                 pluginBuilder.apiAuthProviders(authProviders)
             }
@@ -125,20 +131,19 @@ internal class GraphQLClientFactory {
         /**
          * Construct the [OkHttpClient] configured with the certificate transparency checking interceptor.
          */
-        private fun buildOkHttpClient(
-            builder: OkHttpClient.Builder,
-        ): OkHttpClient.Builder {
+        private fun buildOkHttpClient(builder: OkHttpClient.Builder): OkHttpClient.Builder {
             val interceptor = certificateTransparencyInterceptor {}
-            val httpClientBuilder = builder
-                .readTimeout(30L, TimeUnit.SECONDS)
-                .apply {
-                    // Convert exceptions which are swallowed by the GraphQLOperation error manager
-                    // into ones we can detect
-                    addInterceptor(ConvertClientErrorsInterceptor())
+            val httpClientBuilder =
+                builder
+                    .readTimeout(30L, TimeUnit.SECONDS)
+                    .apply {
+                        // Convert exceptions which are swallowed by the GraphQLOperation error manager
+                        // into ones we can detect
+                        addInterceptor(ConvertClientErrorsInterceptor())
 
-                    // Certificate transparency checking
-                    addNetworkInterceptor(interceptor)
-                }
+                        // Certificate transparency checking
+                        addNetworkInterceptor(interceptor)
+                    }
             return httpClientBuilder
         }
     }
